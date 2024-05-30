@@ -1,0 +1,1 @@
+# junior-challenge-project-template
