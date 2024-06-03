@@ -1,0 +1,72 @@
+{
+  "name": "database",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/database/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "libs/database/jest.config.ts"
+      }
+    },
+    "migration:create": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "libs/database",
+        "color": true,
+        "command": "typeorm migration:create src/lib/migrations/{args.name}"
+      }
+    },
+    "migration:revert": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "libs/database",
+        "color": true,
+        "command": "typeorm migration:revert -d src/lib/data-source.ts"
+      }
+    },
+    "migrations:run": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "libs/database",
+        "color": true,
+        "command": "ts-node src/lib/setup/run-migrations.ts"
+      }
+    },
+    "seed:run": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "libs/database",
+        "color": true,
+        "command": "ts-node ./node_modules/typeorm-extension/bin/cli.cjs seed:run -d src/lib/data-source.ts"
+      }
+    },
+    "seed:create": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "libs/database",
+        "color": true,
+        "command": "ts-node ./node_modules/typeorm-extension/bin/cli.cjs seed:create --name {args.path}"
+      }
+    },
+    "create-db": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "libs/database",
+        "color": true,
+        "command": "ts-node ./node_modules/typeorm-extension/bin/cli.cjs db:create  -d src/lib/data-source.ts"
+      }
+    },
+    "drop-db": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "libs/database",
+        "color": true,
+        "command": "ts-node ./node_modules/typeorm-extension/bin/cli.cjs db:drop  -d src/lib/data-source.ts"
+      }
+    }
+  }
+}

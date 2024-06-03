@@ -1,0 +1,95 @@
+{
+  "name": "app",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/app/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nx/vite:build",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "outputPath": "apps/app/dist",
+        "cwd": "apps/app"
+      },
+      "configurations": {
+        "development": {
+          "mode": "development"
+        },
+        "production": {
+          "mode": "production"
+        }
+      }
+    },
+    "ts:check": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "apps/app",
+        "color": true,
+        "command": "tsc --noEmit"
+      }
+    },
+    "serve": {
+      "executor": "@nx/vite:dev-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "app:build",
+        "cwd": "apps/app"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "app:build:development",
+          "hmr": true
+        },
+        "production": {
+          "buildTarget": "app:build:production",
+          "hmr": false
+        }
+      }
+    },
+    "compile": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "apps/app",
+        "color": true,
+        "command": "tsc && vite build"
+      }
+    },
+    "preview": {
+      "executor": "@nx/vite:preview-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "app:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "app:build:development"
+        },
+        "production": {
+          "buildTarget": "app:build:production"
+        }
+      }
+    },
+    "test": {
+      "executor": "@nx/vite:test",
+      "outputs": ["{options.reportsDirectory}"],
+      "options": {
+        "reportsDirectory": "../../coverage/apps/app"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "maxWarnings": 0
+      }
+    },
+    "serve-static": {
+      "executor": "@nx/web:file-server",
+      "options": {
+        "buildTarget": "app:build"
+      }
+    }
+  },
+  "tags": ["app"]
+}

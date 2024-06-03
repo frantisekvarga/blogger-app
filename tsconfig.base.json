@@ -1,0 +1,28 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "lib": ["ESNext"],
+    "target": "ESNext",
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "strictPropertyInitialization": false,
+    "esModuleInterop": true,
+    "importHelpers": false,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "skipDefaultLibCheck": true,
+    "strict": true,
+    "baseUrl": ".",
+    "paths": {
+      "@nx-serverless-template/workspace-plugin": [
+        "tools/workspace-plugin/src/index.ts"
+      ],
+      "database": ["libs/database/src/index.ts"]
+    }
+  },
+  "exclude": ["node_modules", "tmp"]
+}
