@@ -11,13 +11,13 @@ const options: DataSourceOptions & SeederOptions = {
   synchronize: false,
   logging: true,
   entities: [__dirname + '/entities/**.*.entity.ts'],
-  migrations: [__dirname + '/migrations/**.*.ts'],
+  migrations: [__dirname + '/migrations/**.ts'],
   seeds: [__dirname + '/seeds/**/*.ts'],
   seedTracking: false,
   factories: [__dirname + '/factories/**/*.factory.ts'],
 };
 
-const AppDataSource = new DataSource(options);
+export const AppDataSource = new DataSource(options);
 
 export const initDataSource = async () => {
   try {
@@ -27,4 +27,3 @@ export const initDataSource = async () => {
   }
 };
 
-export default AppDataSource;
