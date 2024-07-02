@@ -1,5 +1,7 @@
+import 'reflect-metadata';
 import { DataSource, DataSourceOptions } from 'typeorm';
 import { SeederOptions } from 'typeorm-extension';
+import * as entities from './entities';
 
 const options: DataSourceOptions & SeederOptions = {
   type: 'postgres',
@@ -10,7 +12,7 @@ const options: DataSourceOptions & SeederOptions = {
   database: process.env.DB_NAME,
   synchronize: false,
   logging: true,
-  entities: [__dirname + '/entities/**.*.entity.ts'],
+  entities: Object.values(entities),
   migrations: [__dirname + '/migrations/**.ts'],
   seeds: [__dirname + '/seeds/**/*.ts'],
   seedTracking: false,
@@ -26,4 +28,3 @@ export const initDataSource = async () => {
     console.error('Error during initializing data source', error);
   }
 };
-
