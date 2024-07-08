@@ -24,9 +24,20 @@
     - [mac](https://formulae.brew.sh/formula/nvm#default)
   - nvm install 20
   - nvm use 20
-- yarn install
-- nx serve api (port 3333)
-- nx serve app (port 4200)
+- create your own env file for database based on .sample.env
+  - for usage of the values check [`datasource`](./libs/database/src/lib/data-source.ts)
+- yarn install 
+- nx serve api
+- nx serve app
+
+### Important
+- use yarn for installing dependencies
+- use yarn install in each of the packages
+  - in api package
+  - in app package
+  - in database package
+- when installing dependencies, always install into the specific package
+- use eslint and prettier
 
 ## Database
 - use postgres

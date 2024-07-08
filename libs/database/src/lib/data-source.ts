@@ -13,10 +13,10 @@ const options: DataSourceOptions & SeederOptions = {
   synchronize: false,
   logging: true,
   entities: Object.values(entities),
-  migrations: [__dirname + '/migrations/**.ts'],
-  seeds: [__dirname + '/seeds/**/*.ts'],
+  migrations: [__dirname + '/migrations/*.ts'],
+  seeds: [__dirname + '/seeds/*.ts'],
   seedTracking: false,
-  factories: [__dirname + '/factories/**/*.factory.ts'],
+  factories: [__dirname + '/factories/*.factory.ts'],
 };
 
 export const AppDataSource = new DataSource(options);
