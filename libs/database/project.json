@@ -41,7 +41,7 @@
       "options": {
         "cwd": "libs/database",
         "color": true,
-        "command": "ts-node ./node_modules/typeorm-extension/bin/cli.cjs seed:run -d src/lib/data-source.ts"
+        "command": "ts-node -r tsconfig-paths/register ./node_modules/typeorm-extension/bin/cli.cjs seed:run -d src/lib/data-source.ts"
       }
     },
     "seed:create": {

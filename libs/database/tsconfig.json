@@ -1,7 +1,9 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "module": "commonjs"
+    "paths": {
+      "database": ["libs/database/src/index.ts"]
+    }
   },
   "files": [],
   "include": [],
