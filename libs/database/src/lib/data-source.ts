@@ -3,6 +3,11 @@ import { DataSource, DataSourceOptions } from 'typeorm';
 import { SeederOptions } from 'typeorm-extension';
 import * as entities from './entities';
 
+import { allSeeds } from './seeds';
+import { allFactories } from './factories';
+import userFactory from './factories/user.factory';
+import articleFactory from './factories/article.factory';
+
 const options: DataSourceOptions & SeederOptions = {
   type: 'postgres',
   host: process.env.DB_HOST,
@@ -14,10 +19,14 @@ const options: DataSourceOptions & SeederOptions = {
   logging: true,
   entities: Object.values(entities),
   migrations: [__dirname + '/migrations/*.ts'],
-  seeds: [__dirname + '/seeds/*.ts'],
+  seeds: allSeeds, 
+  factories: allFactories,
   seedTracking: false,
-  factories: [__dirname + '/factories/*.factory.ts'],
+  
 };
+
+// ALTER SEQUENCE user_id_seq RESTART WITH 1;
+
 
 export const AppDataSource = new DataSource(options);
 
