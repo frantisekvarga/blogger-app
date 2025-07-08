@@ -3,19 +3,43 @@
  * This is only a minimal backend to get started.
  */
 
-import express from 'express';
-import * as path from 'path';
+import cors from 'cors'
+import { AppDataSource } from 'database'
+import express from 'express'
+import * as path from 'path'
+import { articleRoutes } from './routes/article.routes'
+import { authRoutes } from './routes/auth.routes'
 
 const app = express();
 
+
+AppDataSource.initialize()
+  .then(() => {
+    console.log('Database connected successfully');
+  })
+  .catch((error: Error) => {
+    console.error('Database connection failed:', error);
+  });
+
+// Middleware
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
+// Routes
 app.get('/api', (req, res) => {
-  res.send({ message: 'Welcome to api!' });
+  res.send({ message: 'Welcome to Blogger API!' });
 });
 
+app.use('/api', articleRoutes);
+app.use('/api', authRoutes);
+
+// Start the server
 const port = process.env.PORT || 3333;
 const server = app.listen(port, () => {
-  console.log(`Listening at http://localhost:${port}/api`);
+  console.log(`Server listening at http://localhost:${port}/api`);
+  
 });
+
 server.on('error', console.error);
