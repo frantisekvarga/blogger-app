@@ -5,8 +5,7 @@ import * as entities from './entities';
 
 import { allSeeds } from './seeds';
 import { allFactories } from './factories';
-import userFactory from './factories/user.factory';
-import articleFactory from './factories/article.factory';
+
 
 const options: DataSourceOptions & SeederOptions = {
   type: 'postgres',
