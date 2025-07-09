@@ -7,7 +7,6 @@ import React, {
 import { articleApi } from '../services/articleApi';
 import { Article } from '../types';
 
-
 interface ArticleState {
   articles: Article[];
   featuredArticles: Article[];
@@ -312,9 +311,7 @@ export const ArticleProvider: React.FC<{ children: React.ReactNode }> = ({
         dispatch({
           type: 'SET_ERROR',
           payload:
-            error instanceof Error
-              ? error.message
-              : 'Error creating article',
+            error instanceof Error ? error.message : 'Error creating article',
         });
         throw error;
       }
@@ -328,17 +325,14 @@ export const ArticleProvider: React.FC<{ children: React.ReactNode }> = ({
         type: 'SET_LOADING',
         payload: { key: 'updating', value: true },
       });
-
       try {
-        // TODO: Implement when backend supports it
-        throw new Error('Updating articles is not supported yet');
+        const updated = await articleApi.updateArticle(id, updates);
+        dispatch({ type: 'UPDATE_ARTICLE', payload: updated });
       } catch (error) {
         dispatch({
           type: 'SET_ERROR',
           payload:
-            error instanceof Error
-              ? error.message
-              : 'Error updating article',
+            error instanceof Error ? error.message : 'Error updating article',
         });
         throw error;
       }
@@ -353,8 +347,8 @@ export const ArticleProvider: React.FC<{ children: React.ReactNode }> = ({
     });
 
     try {
-      // TODO: Implement when backend supports it
-      throw new Error('Mazanie článkov zatiaľ nie je podporované');
+      await articleApi.deleteArticle(id);
+      dispatch({ type: 'DELETE_ARTICLE', payload: id });
     } catch (error) {
       dispatch({
         type: 'SET_ERROR',

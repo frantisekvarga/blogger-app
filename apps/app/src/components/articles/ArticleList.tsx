@@ -8,6 +8,9 @@ interface ArticleListProps {
   currentPage?: number;
   totalPages?: number;
   onPageChange?: (page: number) => void;
+  showActions?: boolean;
+  onEdit?: (article: Article) => void;
+  onDelete?: (article: Article) => void;
 }
 
 export const ArticleList: React.FC<ArticleListProps> = ({
@@ -16,6 +19,9 @@ export const ArticleList: React.FC<ArticleListProps> = ({
   currentPage = 1,
   totalPages = 1,
   onPageChange,
+  showActions = false,
+  onEdit,
+  onDelete,
 }) => {
   if (loading) {
     return (
@@ -42,7 +48,13 @@ export const ArticleList: React.FC<ArticleListProps> = ({
       {/* Articles List */}
       <div className="d-flex flex-column gap-4">
         {articles.map(article => (
-          <ArticleCard key={article.id} article={article} />
+          <ArticleCard
+            key={article.id}
+            article={article}
+            showActions={showActions}
+            onEdit={onEdit}
+            onDelete={onDelete}
+          />
         ))}
       </div>
 

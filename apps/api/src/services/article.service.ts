@@ -1,4 +1,4 @@
-import { AppDataSource, Article, User } from 'database'
+import { AppDataSource, Article, User } from 'database';
 
 export class ArticleService {
   private articleRepository = AppDataSource.getRepository(Article);
@@ -91,6 +91,45 @@ export class ArticleService {
       };
     } catch (error) {
       console.error('Error fetching all articles:', error);
+      throw error;
+    }
+  }
+
+  async updateArticle(
+    articleId: number,
+    updates: Partial<Pick<Article, 'title' | 'content' | 'image_url'>>
+  ): Promise<Article | null> {
+    try {
+      const article = await this.articleRepository.findOne({
+        where: { id: articleId },
+      });
+      if (!article) return null;
+      if (updates.title !== undefined) article.title = updates.title;
+      if (updates.content !== undefined) article.content = updates.content;
+      if (updates.image_url !== undefined)
+        article.image_url = updates.image_url;
+      await this.articleRepository.save(article);
+      return article;
+    } catch (error) {
+      console.error('Error updating article:', error);
+      throw error;
+    }
+  }
+
+  async deleteArticle(articleId: number): Promise<boolean> {
+    try {
+      const article = await this.articleRepository.findOne({
+        where: { id: articleId },
+      });
+
+      if (!article) {
+        return false;
+      }
+
+      await this.articleRepository.remove(article);
+      return true;
+    } catch (error) {
+      console.error('Error deleting article:', error);
       throw error;
     }
   }

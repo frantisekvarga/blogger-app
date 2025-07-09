@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react'
-import { ArticleList } from '../components/articles'
-import { useArticles } from '../context'
+import React, { useEffect } from 'react';
+import { ArticleList } from '../components/articles';
+import { useArticles } from '../context';
 
 export const HomePage: React.FC = () => {
   const { state, fetchFeaturedArticles } = useArticles();
@@ -11,12 +11,9 @@ export const HomePage: React.FC = () => {
   }, [fetchFeaturedArticles]);
 
   return (
-    <div>
+    <div className="container py-4">
       {/* Page Header */}
-      <h1>
-        Featured Articles
-      </h1>
-      
+      <h1>Featured Articles</h1>
 
       {/* Articles List using ArticleList component */}
       <ArticleList

@@ -12,10 +12,12 @@ class ApiService {
     options: RequestInit = {}
   ): Promise<T> {
     const url = `${this.baseUrl}${endpoint}`;
+    const token = localStorage.getItem('authToken');
 
     const config: RequestInit = {
       headers: {
         'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
         ...options.headers,
       },
       ...options,
@@ -67,6 +69,19 @@ class ApiService {
   // DELETE request
   async delete<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
     return this.request<T>(endpoint, { method: 'DELETE', ...options });
+  }
+
+  // PATCH request
+  async patch<T>(
+    endpoint: string,
+    data?: any,
+    options: RequestInit = {}
+  ): Promise<T> {
+    return this.request<T>(endpoint, {
+      method: 'PATCH',
+      body: data ? JSON.stringify(data) : undefined,
+      ...options,
+    });
   }
 }
 

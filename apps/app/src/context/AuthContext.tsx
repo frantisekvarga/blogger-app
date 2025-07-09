@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useReducer } from 'react';
+import React, { createContext, useEffect, useReducer } from 'react';
 import { apiService } from '../services/api';
 import { AuthState, LoginCredentials, RegisterData, User } from '../types';
 
@@ -72,6 +72,8 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
 
 // Create context
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+export { AuthContext };
 
 // Provider component
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
@@ -163,13 +165,4 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       {children}
     </AuthContext.Provider>
   );
-};
-
-// Custom hook
-export const useAuth = (): AuthContextType => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
 };

@@ -4,6 +4,10 @@ import { DataSource, DataSourceOptions } from 'typeorm';
 import { SeederOptions } from 'typeorm-extension';
 import * as entities from './entities';
 
+import { allSeeds } from './seeds';
+import { allFactories } from './factories';
+
+
 const options: DataSourceOptions & SeederOptions = {
   type: 'postgres',
   host: process.env.DB_HOST,
@@ -15,9 +19,9 @@ const options: DataSourceOptions & SeederOptions = {
   logging: true,
   entities: Object.values(entities),
   migrations: [__dirname + '/migrations/*.ts'],
-  seeds: [__dirname + '/seeds/*.ts'],
+  seeds: allSeeds,
   seedTracking: false,
-  factories: [__dirname + '/factories/*.factory.ts'],
+  factories: allFactories,
 };
 
 export const AppDataSource = new DataSource(options);

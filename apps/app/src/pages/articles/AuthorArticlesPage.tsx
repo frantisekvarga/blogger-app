@@ -28,7 +28,7 @@ export const AuthorArticlesPage: React.FC = () => {
         className="d-flex justify-content-center align-items-center"
         style={{ minHeight: '16rem' }}>
         <div className="fs-5 text-secondary">
-          Autor nebol nájdený alebo nemá žiadne články
+          Author not found or has no articles
         </div>
       </div>
     );
@@ -47,7 +47,7 @@ export const AuthorArticlesPage: React.FC = () => {
   const authorIdNum = articles[0]?.user_id || authorId || 'Neznámy autor';
 
   return (
-    <div>
+    <div className="container py-4">
       {/* Author Header */}
       <h1 className="h4 mb-4 text-dark">Autor ID: {authorIdNum} blog</h1>
 

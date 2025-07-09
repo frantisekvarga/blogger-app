@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../constants';
-import { useAuth } from '../../context';
+import { useAuth } from '../../hooks/useAuth';
 
 export const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -20,7 +20,9 @@ export const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="d-flex justify-content-center align-items-center min-vh-100 py-5 px-3">
+    <div
+      className="d-flex justify-content-center py-5 px-3"
+      style={{ minHeight: '100vh', paddingTop: '10vh' }}>
       <div className="w-100" style={{ maxWidth: 400 }}>
         <div className="bg-white p-4 shadow rounded">
           <div className="mb-4">

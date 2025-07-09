@@ -20,18 +20,18 @@ export interface AuthorArticlesResponse {
 
 class ArticleApiService {
   async getFeaturedArticles(): Promise<Article[]> {
-    return apiService.get<Article[]>('/public/articles/featured');
+    return apiService.get<Article[]>('/articles/featured');
   }
 
   async getArticlesByAuthor(authorId: number): Promise<AuthorArticlesResponse> {
     const response = await apiService.get<any>(
-      `/public/users/${authorId}/articles`
+      `/articles/users/${authorId}/articles`
     );
     return response.data;
   }
 
   async getArticleById(articleId: number): Promise<Article> {
-    return apiService.get<Article>(`/public/articles/${articleId}`);
+    return apiService.get<Article>(`/articles/${articleId}`);
   }
 
   async getAllArticles(
@@ -39,7 +39,22 @@ class ArticleApiService {
     limit: number = 10
   ): Promise<ArticleResponse> {
     return apiService.get<ArticleResponse>(
-      `/public/articles?page=${page}&limit=${limit}`
+      `/articles/get-all?page=${page}&limit=${limit}`
+    );
+  }
+
+  async updateArticle(
+    articleId: number,
+    updates: Partial<Article>
+  ): Promise<Article> {
+    return apiService.patch<Article>(`/articles/${articleId}`, updates);
+  }
+
+  async deleteArticle(
+    articleId: number
+  ): Promise<{ success: boolean; message: string }> {
+    return apiService.delete<{ success: boolean; message: string }>(
+      `/articles/${articleId}`
     );
   }
 }

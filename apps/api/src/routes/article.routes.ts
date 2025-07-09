@@ -1,17 +1,34 @@
-import { Router } from 'express'
-import { ArticleController } from '../controllers/article.controller'
+import { Router } from 'express';
+import { ArticleController } from '../controllers/article.controller';
+import { articleOwnerOrAdminMiddleware } from '../middleware/articleOwnerOrAdmin';
+import { authMiddleware } from '../middleware/auth';
 
 const router = Router();
 const articleController = new ArticleController();
 
-// Public routes
+
 router.get(
-  '/public/users/:userId/articles',
+  '/users/:userId/articles',
   articleController.getArticlesByAuthor
 );
-router.get('/public/articles/featured', articleController.getFeaturedArticles);
-router.get('/public/articles', articleController.getAllArticles);
-router.get('/public/articles/:articleId', articleController.getArticleById);
+router.get('/featured', articleController.getFeaturedArticles);
+router.get('/get-all', articleController.getAllArticles);
+router.get('/:articleId', articleController.getArticleById);
 
-export { router as articleRoutes }
 
+router.patch(
+  '/:articleId',
+  authMiddleware,
+  articleOwnerOrAdminMiddleware,
+  articleController.updateArticle
+);
+
+
+router.delete(
+  '/:articleId',
+  authMiddleware,
+  articleOwnerOrAdminMiddleware,
+  articleController.deleteArticle
+);
+
+export { router as articleRoutes };

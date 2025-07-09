@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import logo from '../assets/logo.png';
-import { ROUTES } from '../constants';
-import { useAuth } from '../context';
+import logo from '../../assets/logo.png';
+import { ROUTES } from '../../constants';
+import { useAuth } from '../../hooks/useAuth';
 
 export const Navigation: React.FC = () => {
   const location = useLocation();
@@ -67,6 +67,47 @@ export const Navigation: React.FC = () => {
                 <span className="fw-semibold text-primary me-2">
                   {state.user.name}
                 </span>
+                {state.user.role === 'admin' ? (
+                  <div className="dropdown me-2">
+                    <button
+                      className="btn btn-outline-primary btn-sm fw-semibold dropdown-toggle"
+                      type="button"
+                      id="articlesDropdown"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false">
+                      Articles
+                    </button>
+                    <ul
+                      className="dropdown-menu"
+                      aria-labelledby="articlesDropdown">
+                      <li>
+                        <Link className="dropdown-item" to={ROUTES.MY_ARTICLES}>
+                          My Articles
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          className="dropdown-item"
+                          to={ROUTES.ALL_ARTICLES}>
+                          All Articles
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          className="dropdown-item"
+                          to={ROUTES.CREATE_ARTICLE}>
+                          Create Article
+                        </Link>
+                      </li>
+                    </ul>
+                  </div>
+                ) : (
+                  <Link
+                    to="/my-articles"
+                    className="btn btn-outline-primary btn-sm fw-semibold me-2">
+                    My Articles
+                  </Link>
+                )}
                 <button
                   className="btn btn-outline-secondary btn-sm"
                   onClick={logout}>

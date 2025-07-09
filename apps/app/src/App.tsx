@@ -1,10 +1,16 @@
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { Layout } from './app/Layout';
+import { ProtectedRoute } from './components/common/ProtectedRoute';
 import { ROUTES } from './constants';
-import { HomePage } from './pages/HomePage';
+import { AboutPage } from './pages/About';
+import { AllArticlesPage } from './pages/admin/AllArticlesPage';
 import { ArticleDetailPage } from './pages/articles/ArticleDetailPage';
 import { AuthorArticlesPage } from './pages/articles/AuthorArticlesPage';
+import { EditArticlePage } from './pages/articles/EditArticlePage';
+import { MyArticlesPage } from './pages/articles/MyArticlesPage';
 import { LoginPage, RegisterPage } from './pages/auth';
+import { HomePage } from './pages/HomePage';
+import { CreateArticlePage } from './pages/articles/CreateArticle';
 
 function App() {
   return (
@@ -21,12 +27,41 @@ function App() {
             path={ROUTES.RECENT_ARTICLES}
             element={<div>Recent Articles Page - Coming Soon</div>}
           />
-          <Route
-            path={ROUTES.ABOUT}
-            element={<div>About Page - Coming Soon</div>}
-          />
+          <Route path={ROUTES.ABOUT} element={<AboutPage />} />
           <Route path={ROUTES.LOGIN} element={<LoginPage />} />
           <Route path={ROUTES.SIGNUP} element={<RegisterPage />} />
+          <Route
+            path={ROUTES.MY_ARTICLES}
+            element={
+              <ProtectedRoute>
+                <MyArticlesPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path={ROUTES.EDIT_ARTICLE}
+            element={
+              <ProtectedRoute>
+                <EditArticlePage />
+              </ProtectedRoute>
+            }
+            />
+            <Route
+              path={ROUTES.ALL_ARTICLES}
+              element={
+                <ProtectedRoute adminOnly>
+                  <AllArticlesPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path={ROUTES.CREATE_ARTICLE}
+              element={
+                <ProtectedRoute >
+                  <CreateArticlePage />
+                </ProtectedRoute>
+              }
+            />
         </Routes>
       </Layout>
     </Router>

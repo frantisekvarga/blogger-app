@@ -10,6 +10,5 @@ export interface Article {
   image_url: string;
   user_id: number;
   published_at: string;
-  
+  author?: Author;
 }
-

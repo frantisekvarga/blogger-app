@@ -8,7 +8,6 @@ export class ArticleController {
     this.articleService = new ArticleService();
   }
 
-  // GET /api/public/users/:userId/articles
   getArticlesByAuthor = async (req: Request, res: Response): Promise<void> => {
     try {
       const { userId } = req.params;
@@ -58,7 +57,6 @@ export class ArticleController {
     }
   };
 
-  // GET /api/public/articles/featured
   getFeaturedArticles = async (req: Request, res: Response): Promise<void> => {
     try {
       const articles = await this.articleService.getFeaturedArticles();
@@ -84,8 +82,6 @@ export class ArticleController {
       res.status(500).json({ error: 'Internal server error' });
     }
   };
-
-  // GET /api/public/articles
   getAllArticles = async (req: Request, res: Response): Promise<void> => {
     try {
       const page = parseInt(req.query.page as string) || 1;
@@ -117,7 +113,6 @@ export class ArticleController {
     }
   };
 
-  // GET /api/public/articles/:articleId
   getArticleById = async (req: Request, res: Response): Promise<void> => {
     try {
       const { articleId } = req.params;
@@ -151,6 +146,67 @@ export class ArticleController {
       });
     } catch (error) {
       console.error('Error in getArticleById:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  };
+
+  updateArticle = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { articleId } = req.params;
+      const id = parseInt(articleId, 10);
+      if (isNaN(id)) {
+        res.status(400).json({ error: 'Invalid article ID' });
+        return;
+      }
+      const updates = req.body;
+      const updated = await this.articleService.updateArticle(id, updates);
+      if (!updated) {
+        res.status(404).json({ error: 'Article not found' });
+        return;
+      }
+      res.status(200).json({
+        id: updated.id,
+        title: updated.title,
+        content: updated.content,
+        image_url: updated.image_url,
+        user_id: updated.user_id,
+        published_at: updated.published_at,
+        author: updated.author
+          ? {
+              id: updated.author.id,
+              name: updated.author.name,
+            }
+          : undefined,
+      });
+    } catch (error) {
+      console.error('Error in updateArticle:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  };
+
+  deleteArticle = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { articleId } = req.params;
+      const id = parseInt(articleId, 10);
+
+      if (isNaN(id)) {
+        res.status(400).json({ error: 'Invalid article ID' });
+        return;
+      }
+
+      const deleted = await this.articleService.deleteArticle(id);
+
+      if (!deleted) {
+        res.status(404).json({ error: 'Article not found' });
+        return;
+      }
+
+      res.status(200).json({
+        success: true,
+        message: 'Article deleted successfully',
+      });
+    } catch (error) {
+      console.error('Error in deleteArticle:', error);
       res.status(500).json({ error: 'Internal server error' });
     }
   };

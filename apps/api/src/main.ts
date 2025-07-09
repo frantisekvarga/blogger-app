@@ -21,19 +21,15 @@ AppDataSource.initialize()
     console.error('Database connection failed:', error);
   });
 
-// Middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
-// Routes
-app.get('/api', (req, res) => {
-  res.send({ message: 'Welcome to Blogger API!' });
-});
 
-app.use('/api', articleRoutes);
-app.use('/api', authRoutes);
+
+app.use('/api/articles', articleRoutes);
+app.use('/api/auth', authRoutes);
 
 // Start the server
 const port = process.env.PORT || 3333;
