@@ -6,7 +6,9 @@
   "targets": {
     "build": {
       "executor": "@nx/vite:build",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "defaultConfiguration": "production",
       "options": {
         "outputPath": "apps/app/dist",
@@ -34,7 +36,9 @@
       "defaultConfiguration": "development",
       "options": {
         "buildTarget": "app:build",
-        "cwd": "apps/app"
+        "cwd": "apps/app",
+        "proxyConfig": "apps/app/proxy.conf.json",
+        "port": 4200
       },
       "configurations": {
         "development": {
@@ -72,14 +76,18 @@
     },
     "test": {
       "executor": "@nx/vite:test",
-      "outputs": ["{options.reportsDirectory}"],
+      "outputs": [
+        "{options.reportsDirectory}"
+      ],
       "options": {
         "reportsDirectory": "../../coverage/apps/app"
       }
     },
     "lint": {
       "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"],
+      "outputs": [
+        "{options.outputFile}"
+      ],
       "options": {
         "maxWarnings": 0
       }
@@ -91,5 +99,7 @@
       }
     }
   },
-  "tags": ["app"]
+  "tags": [
+    "app"
+  ]
 }

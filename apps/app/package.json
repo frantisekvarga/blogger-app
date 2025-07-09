@@ -5,6 +5,15 @@
     "node": "20"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.81.5",
+    "@tanstack/react-query-devtools": "^5.81.5",
+    "axios": "^1.10.0",
+    "bootstrap": "^5.3.7",
     "react-router": "^6.23.1"
+  },
+  "devDependencies": {
+    "@types/react-query": "^1.2.9"
+    
   }
+
 }
