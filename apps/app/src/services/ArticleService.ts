@@ -1,5 +1,5 @@
 import { AxiosError } from 'axios';
-import api from './api'; 
+import api from './Api';
 import Article from '../types/ArticleType';
 
 export const getArticleById = async (
@@ -11,8 +11,10 @@ export const getArticleById = async (
     return response.data;
   } catch (error) {
     const axiosError = error as AxiosError;
-    throw new Error(
-      `Failed to fetch article: ${axiosError.response?.status || 'No status'} - ${axiosError.message}`
-    );
+
+    if (axiosError.response?.status === 404) {
+      throw new Error('Article not found');
+    }
+    throw new Error(`Failed to fetch article`);
   }
 };
