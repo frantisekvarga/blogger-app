@@ -7,9 +7,7 @@ export const getArticleById = async (
   articleId: number
 ): Promise<Article> => {
   try {
-    const response = await api.get<Article>(
-      `/public/users/${userId}/articles/${articleId}`
-    );
+    const response = await api.get<Article>(`/public/users/${userId}/articles/${articleId}`);
     return response.data;
   } catch (error) {
     const axiosError = error as AxiosError;
