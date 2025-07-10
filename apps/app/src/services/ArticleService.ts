@@ -1,13 +1,13 @@
 import { AxiosError } from 'axios';
 import api from './Api';
-import Article from '../types/ArticleType';
+import type {ArticleDetailResponse}from '../types/ArticleType';
 
 export const getArticleById = async (
   userId: number,
   articleId: number
-): Promise<Article> => {
+): Promise<ArticleDetailResponse> => {
   try {
-    const response = await api.get<Article>(`/public/users/${userId}/articles/${articleId}`);
+    const response = await api.get<ArticleDetailResponse>(`/public/users/${userId}/articles/${articleId}`);
     return response.data;
   } catch (error) {
     const axiosError = error as AxiosError;

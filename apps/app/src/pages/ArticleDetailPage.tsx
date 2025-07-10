@@ -6,25 +6,35 @@ import { ArticleImage } from '../components/article/ArticleImage';
 import Header from '../components/Header';
 import LoadingSpinner from '../components/shared/LoadingSpinner';
 import ReactMarkdown from 'react-markdown';
-import { RelatedArticles } from '../components/article/RelatedArticles';
+import { RecentArticles } from '../components/article/RecentArticles';
 import ArticleNotFound from '../components/article/ArticleNotFound';
+import type { ArticleDetailResponse } from '../types/ArticleType';
+
+
+
 
 export const ArticleDetailPage = () => {
   const { userId, articleId } = useParams<{ userId: string; articleId: string }>();
   const [contentReady, setContentReady] = useState(false);
-  const { data: article, isLoading, isError, error } = useQuery({
+
+  const { data, isLoading, isError, error } = useQuery<ArticleDetailResponse>({
     queryKey: ['article', userId, articleId],
     queryFn: () => getArticleById(Number(userId), Number(articleId)),
     enabled: !!userId && !!articleId,
-    retry: 1
+    staleTime: 5 * 60 * 1000,
+    gcTime: 1000 * 60 * 60 * 24,
+    refetchOnWindowFocus: false,
   });
 
+  const article = data?.article;
+  const userName = data?.userName;
+  const recentArticles = data?.recentArticles ?? [];
+
   useEffect(() => {
-    if (!article) {
-      return;
-    }
+    if (!article?.image_url) return setContentReady(true);
+
     const img = new Image();
-    img.src = article.image_url || '';
+    img.src = article.image_url;
     img.onload = () => setContentReady(true);
     img.onerror = () => setContentReady(true);
     return () => {
@@ -32,7 +42,6 @@ export const ArticleDetailPage = () => {
       img.onerror = null;
     };
   }, [article]);
-
 
   if ((isLoading || !contentReady) && !isError) {
     return (
@@ -42,22 +51,24 @@ export const ArticleDetailPage = () => {
       </>
     );
   }
+
   if (isError || !article) {
     if ((error as Error).message === 'Article not found') {
       return <ArticleNotFound />;
     }
-    return;
+    return null;
   }
-
 
   return (
     <>
       <Header />
-      <main className="container  my-5 pt-3">
+      <main className="container my-5 pt-3">
         <div className="row">
           <div className="col-12 col-xl-8">
             <h1 className="fw-bold mb-2">{article.title}</h1>
-            <p className="text-muted small">{`user${userId} • ${new Date(article.published_at ?? '').toLocaleDateString()}`}</p>
+            <p className="text-muted small">
+              {userName} • {new Date(article.published_at ?? '').toLocaleDateString()}
+            </p>
             <div className="text-center my-4">
               <ArticleImage
                 src={article.image_url || ''}
@@ -71,7 +82,7 @@ export const ArticleDetailPage = () => {
           </div>
 
           <div className="col-12 col-xl-4 mt-5 mt-xl-0 responsive-border-left">
-            <RelatedArticles relatedIds={[2, 4, 8, 10, 12]} />
+            <RecentArticles articles={recentArticles} />
           </div>
         </div>
       </main>
