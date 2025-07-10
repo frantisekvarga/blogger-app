@@ -26,9 +26,10 @@ export class Article {
   @Column({ name: 'is_published' })
   isPublished: boolean;
 
-  @Column()
+  @Column({ name: 'created_at' })
   createdAt: Date;
 
-  @Column()
+  @Column({ name: 'updated_at' })
   updatedAt: Date;
+
 }
