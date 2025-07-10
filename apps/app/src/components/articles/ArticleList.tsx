@@ -1,5 +1,6 @@
 import React from 'react';
 import { Article } from '../../types';
+import { Pagination } from '../common/Pagination';
 import { ArticleCard } from './ArticleCard';
 
 interface ArticleListProps {
@@ -8,7 +9,7 @@ interface ArticleListProps {
   currentPage?: number;
   totalPages?: number;
   onPageChange?: (page: number) => void;
-  showActions?: boolean;
+  showEditDelete?: boolean;
   onEdit?: (article: Article) => void;
   onDelete?: (article: Article) => void;
 }
@@ -19,7 +20,7 @@ export const ArticleList: React.FC<ArticleListProps> = ({
   currentPage = 1,
   totalPages = 1,
   onPageChange,
-  showActions = false,
+  showEditDelete = false,
   onEdit,
   onDelete,
 }) => {
@@ -28,7 +29,7 @@ export const ArticleList: React.FC<ArticleListProps> = ({
       <div
         className="d-flex justify-content-center align-items-center"
         style={{ minHeight: '16rem' }}>
-        <div className="fs-5 text-secondary">Načítavam články...</div>
+        <div className="fs-5 text-secondary">Loading articles...</div>
       </div>
     );
   }
@@ -38,57 +39,31 @@ export const ArticleList: React.FC<ArticleListProps> = ({
       <div
         className="d-flex justify-content-center align-items-center"
         style={{ minHeight: '16rem' }}>
-        <div className="fs-5 text-secondary">Žiadne články neboli nájdené.</div>
+        <div className="fs-5 text-secondary">No articles found.</div>
       </div>
     );
   }
 
   return (
     <div>
-      {/* Articles List */}
       <div className="d-flex flex-column gap-4">
         {articles.map(article => (
           <ArticleCard
             key={article.id}
             article={article}
-            showActions={showActions}
+            showEditDelete={showEditDelete}
             onEdit={onEdit}
             onDelete={onDelete}
           />
         ))}
       </div>
 
-      {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="d-flex justify-content-center mt-4">
-          <div className="d-flex gap-2 align-items-center">
-            <span
-              className={`small ${currentPage === 1 ? 'text-secondary' : 'text-primary cursor-pointer'}`}
-              style={{ cursor: currentPage === 1 ? 'default' : 'pointer' }}
-              onClick={() =>
-                currentPage > 1 && onPageChange && onPageChange(currentPage - 1)
-              }>
-              «
-            </span>
-            <span
-              className="bg-light text-dark rounded-circle d-flex align-items-center justify-content-center"
-              style={{ width: 28, height: 28, fontSize: 13 }}>
-              {currentPage}
-            </span>
-            <span
-              className={`small ${currentPage === totalPages ? 'text-secondary' : 'text-primary cursor-pointer'}`}
-              style={{
-                cursor: currentPage === totalPages ? 'default' : 'pointer',
-              }}
-              onClick={() =>
-                currentPage < totalPages &&
-                onPageChange &&
-                onPageChange(currentPage + 1)
-              }>
-              »
-            </span>
-          </div>
-        </div>
+      {totalPages > 1 && onPageChange && (
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={onPageChange}
+        />
       )}
     </div>
   );

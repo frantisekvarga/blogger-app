@@ -6,15 +6,10 @@ import { authMiddleware } from '../middleware/auth';
 const router = Router();
 const articleController = new ArticleController();
 
-
-router.get(
-  '/users/:userId/articles',
-  articleController.getArticlesByAuthor
-);
+router.get('/users/:userId/articles', articleController.getArticlesByAuthor);
 router.get('/featured', articleController.getFeaturedArticles);
 router.get('/get-all', articleController.getAllArticles);
 router.get('/:articleId', articleController.getArticleById);
-
 
 router.patch(
   '/:articleId',
@@ -22,7 +17,6 @@ router.patch(
   articleOwnerOrAdminMiddleware,
   articleController.updateArticle
 );
-
 
 router.delete(
   '/:articleId',

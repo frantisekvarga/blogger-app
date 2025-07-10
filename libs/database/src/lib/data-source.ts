@@ -1,11 +1,7 @@
-import 'dotenv/config';
 import 'reflect-metadata';
 import { DataSource, DataSourceOptions } from 'typeorm';
 import { SeederOptions } from 'typeorm-extension';
 import * as entities from './entities';
-
-import { allSeeds } from './seeds';
-import { allFactories } from './factories';
 
 
 const options: DataSourceOptions & SeederOptions = {
@@ -19,9 +15,9 @@ const options: DataSourceOptions & SeederOptions = {
   logging: true,
   entities: Object.values(entities),
   migrations: [__dirname + '/migrations/*.ts'],
-  seeds: allSeeds,
+  seeds: [__dirname + '/seeds/*.ts'],
   seedTracking: false,
-  factories: allFactories,
+  factories: [__dirname + '/factories/*.factory.ts'],
 };
 
 export const AppDataSource = new DataSource(options);

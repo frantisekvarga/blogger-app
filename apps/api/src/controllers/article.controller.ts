@@ -1,5 +1,10 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { ArticleService } from '../services/article.service';
+import {
+  ArticleNotFoundException,
+  AuthorNotFoundException,
+  InvalidIdException,
+} from '../types/exceptions';
 
 export class ArticleController {
   private articleService: ArticleService;
@@ -8,21 +13,23 @@ export class ArticleController {
     this.articleService = new ArticleService();
   }
 
-  getArticlesByAuthor = async (req: Request, res: Response): Promise<void> => {
+  getArticlesByAuthor = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
       const { userId } = req.params;
       const authorId = parseInt(userId, 10);
 
       if (isNaN(authorId)) {
-        res.status(400).json({ error: 'Invalid user ID' });
-        return;
+        throw new InvalidIdException('user', userId);
       }
 
       const result = await this.articleService.getArticlesByAuthor(authorId);
 
       if (!result.author) {
-        res.status(404).json({ error: 'Author not found' });
-        return;
+        throw new AuthorNotFoundException(authorId);
       }
 
       res.status(200).json({
@@ -52,12 +59,15 @@ export class ArticleController {
         },
       });
     } catch (error) {
-      console.error('Error in getArticlesByAuthor:', error);
-      res.status(500).json({ error: 'Internal server error' });
+      next(error);
     }
   };
 
-  getFeaturedArticles = async (req: Request, res: Response): Promise<void> => {
+  getFeaturedArticles = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
       const articles = await this.articleService.getFeaturedArticles();
 
@@ -78,11 +88,15 @@ export class ArticleController {
         }))
       );
     } catch (error) {
-      console.error('Error in getFeaturedArticles:', error);
-      res.status(500).json({ error: 'Internal server error' });
+      next(error);
     }
   };
-  getAllArticles = async (req: Request, res: Response): Promise<void> => {
+
+  getAllArticles = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
       const page = parseInt(req.query.page as string) || 1;
       const limit = parseInt(req.query.limit as string) || 10;
@@ -108,26 +122,27 @@ export class ArticleController {
         totalPages: result.totalPages,
       });
     } catch (error) {
-      console.error('Error in getAllArticles:', error);
-      res.status(500).json({ error: 'Internal server error' });
+      next(error);
     }
   };
 
-  getArticleById = async (req: Request, res: Response): Promise<void> => {
+  getArticleById = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
       const { articleId } = req.params;
       const id = parseInt(articleId, 10);
 
       if (isNaN(id)) {
-        res.status(400).json({ error: 'Invalid article ID' });
-        return;
+        throw new InvalidIdException('article', articleId);
       }
 
       const article = await this.articleService.getArticleById(id);
 
       if (!article) {
-        res.status(404).json({ error: 'Article not found' });
-        return;
+        throw new ArticleNotFoundException(id);
       }
 
       res.status(200).json({
@@ -145,24 +160,25 @@ export class ArticleController {
           : undefined,
       });
     } catch (error) {
-      console.error('Error in getArticleById:', error);
-      res.status(500).json({ error: 'Internal server error' });
+      next(error);
     }
   };
 
-  updateArticle = async (req: Request, res: Response): Promise<void> => {
+  updateArticle = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
       const { articleId } = req.params;
       const id = parseInt(articleId, 10);
       if (isNaN(id)) {
-        res.status(400).json({ error: 'Invalid article ID' });
-        return;
+        throw new InvalidIdException('article', articleId);
       }
       const updates = req.body;
       const updated = await this.articleService.updateArticle(id, updates);
       if (!updated) {
-        res.status(404).json({ error: 'Article not found' });
-        return;
+        throw new ArticleNotFoundException(id);
       }
       res.status(200).json({
         id: updated.id,
@@ -179,35 +195,28 @@ export class ArticleController {
           : undefined,
       });
     } catch (error) {
-      console.error('Error in updateArticle:', error);
-      res.status(500).json({ error: 'Internal server error' });
+      next(error);
     }
   };
 
-  deleteArticle = async (req: Request, res: Response): Promise<void> => {
+  deleteArticle = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
       const { articleId } = req.params;
       const id = parseInt(articleId, 10);
-
       if (isNaN(id)) {
-        res.status(400).json({ error: 'Invalid article ID' });
-        return;
+        throw new InvalidIdException('article', articleId);
       }
-
       const deleted = await this.articleService.deleteArticle(id);
-
       if (!deleted) {
-        res.status(404).json({ error: 'Article not found' });
-        return;
+        throw new ArticleNotFoundException(id);
       }
-
-      res.status(200).json({
-        success: true,
-        message: 'Article deleted successfully',
-      });
+      res.status(200).json({ message: 'Article deleted successfully' });
     } catch (error) {
-      console.error('Error in deleteArticle:', error);
-      res.status(500).json({ error: 'Internal server error' });
+      next(error);
     }
   };
 }

@@ -10,6 +10,7 @@ export class ArticleService {
     total: number;
   }> {
     try {
+      
       const author = await this.userRepository.findOne({
         where: { id: authorId },
       });
@@ -34,7 +35,6 @@ export class ArticleService {
         total: articles.length,
       };
     } catch (error) {
-      console.error('Error fetching articles by author:', error);
       throw error;
     }
   }
@@ -49,7 +49,6 @@ export class ArticleService {
 
       return articles;
     } catch (error) {
-      console.error('Error fetching featured articles:', error);
       throw error;
     }
   }
@@ -63,7 +62,6 @@ export class ArticleService {
 
       return article;
     } catch (error) {
-      console.error('Error fetching article by ID:', error);
       throw error;
     }
   }
@@ -90,7 +88,6 @@ export class ArticleService {
         totalPages: Math.ceil(total / limit),
       };
     } catch (error) {
-      console.error('Error fetching all articles:', error);
       throw error;
     }
   }
@@ -103,15 +100,14 @@ export class ArticleService {
       const article = await this.articleRepository.findOne({
         where: { id: articleId },
       });
+
       if (!article) return null;
-      if (updates.title !== undefined) article.title = updates.title;
-      if (updates.content !== undefined) article.content = updates.content;
-      if (updates.image_url !== undefined)
-        article.image_url = updates.image_url;
-      await this.articleRepository.save(article);
-      return article;
+
+      const updatedArticle = { ...article, ...updates };
+
+      await this.articleRepository.save(updatedArticle);
+      return updatedArticle;
     } catch (error) {
-      console.error('Error updating article:', error);
       throw error;
     }
   }
@@ -129,7 +125,6 @@ export class ArticleService {
       await this.articleRepository.remove(article);
       return true;
     } catch (error) {
-      console.error('Error deleting article:', error);
       throw error;
     }
   }

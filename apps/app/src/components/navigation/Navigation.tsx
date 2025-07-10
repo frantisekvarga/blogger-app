@@ -92,13 +92,6 @@ export const Navigation: React.FC = () => {
                           All Articles
                         </Link>
                       </li>
-                      <li>
-                        <Link
-                          className="dropdown-item"
-                          to={ROUTES.CREATE_ARTICLE}>
-                          Create Article
-                        </Link>
-                      </li>
                     </ul>
                   </div>
                 ) : (
@@ -108,6 +101,11 @@ export const Navigation: React.FC = () => {
                     My Articles
                   </Link>
                 )}
+                <Link
+                  to={ROUTES.CREATE_ARTICLE}
+                  className="btn btn-outline-success btn-sm fw-semibold me-2">
+                  Create Article
+                </Link>
                 <button
                   className="btn btn-outline-secondary btn-sm"
                   onClick={logout}>

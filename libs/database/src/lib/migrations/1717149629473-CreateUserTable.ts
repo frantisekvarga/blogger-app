@@ -1,4 +1,4 @@
-import { MigrationInterface, QueryRunner, Table } from 'typeorm'
+import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
 export class CreateUserTable1717149629473 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -23,6 +23,11 @@ export class CreateUserTable1717149629473 implements MigrationInterface {
             type: 'varchar',
             length: '255',
             isUnique: true,
+          },
+          {
+            name: 'password',
+            type: 'varchar',
+            length: '255',
           },
           {
             name: 'role',

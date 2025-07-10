@@ -1,5 +1,5 @@
 import { setSeederFactory } from 'typeorm-extension';
-import { Article } from '../entities/article.entity';
+import { Article } from 'database';
 import { faker } from '@faker-js/faker';
 
 export default setSeederFactory(Article, () => {

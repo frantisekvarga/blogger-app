@@ -1,5 +1,9 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { AuthService } from '../services/auth.service';
+import {
+  MissingFieldsException,
+  PasswordMismatchException,
+} from '../types/exceptions';
 
 export class AuthController {
   private authService: AuthService;
@@ -9,18 +13,26 @@ export class AuthController {
   }
 
   // POST /api/auth/register
-  register = async (req: Request, res: Response): Promise<void> => {
+  register = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
       const { email, name, password, confirmPassword } = req.body;
 
       if (!email || !name || !password || !confirmPassword) {
-        res.status(400).json({ error: 'All fields are required' });
-        return;
+        const missingFields = [];
+        if (!email) missingFields.push('email');
+        if (!name) missingFields.push('name');
+        if (!password) missingFields.push('password');
+        if (!confirmPassword) missingFields.push('confirmPassword');
+
+        throw new MissingFieldsException(missingFields);
       }
 
       if (password !== confirmPassword) {
-        res.status(400).json({ error: 'Passwords do not match' });
-        return;
+        throw new PasswordMismatchException();
       }
 
       const result = await this.authService.register({ email, name, password });
@@ -34,27 +46,27 @@ export class AuthController {
             email: result.user.email,
             role: result.user.role,
           },
-          token: result.token,
         },
       });
     } catch (error) {
-      console.error('Error in register:', error);
-      if (error instanceof Error && error.message.includes('already exists')) {
-        res.status(409).json({ error: error.message });
-      } else {
-        res.status(500).json({ error: 'Internal server error' });
-      }
+      next(error);
     }
   };
 
-  // POST /api/auth/login
-  login = async (req: Request, res: Response): Promise<void> => {
+  login = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
       const { email, password } = req.body;
 
       if (!email || !password) {
-        res.status(400).json({ error: 'Email and password are required' });
-        return;
+        const missingFields = [];
+        if (!email) missingFields.push('email');
+        if (!password) missingFields.push('password');
+
+        throw new MissingFieldsException(missingFields);
       }
 
       const result = await this.authService.login({ email, password });
@@ -72,29 +84,19 @@ export class AuthController {
         },
       });
     } catch (error) {
-      console.error('Error in login:', error);
-      if (
-        error instanceof Error &&
-        error.message.includes('Invalid credentials')
-      ) {
-        res.status(401).json({ error: error.message });
-      } else {
-        res.status(500).json({ error: 'Internal server error' });
-      }
+      next(error);
     }
   };
 
-  // GET /api/auth/me
-  getCurrentUser = async (req: Request, res: Response): Promise<void> => {
+  
+  getCurrentUser = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
-      const token = req.headers.authorization?.replace('Bearer ', '');
-
-      if (!token) {
-        res.status(401).json({ error: 'No token provided' });
-        return;
-      }
-
-      const user = await this.authService.getCurrentUser(token);
+      // @ts-ignore - user
+      const user = req.user;
 
       res.status(200).json({
         success: true,
@@ -108,12 +110,7 @@ export class AuthController {
         },
       });
     } catch (error) {
-      console.error('Error in getCurrentUser:', error);
-      if (error instanceof Error && error.message.includes('Invalid token')) {
-        res.status(401).json({ error: error.message });
-      } else {
-        res.status(500).json({ error: 'Internal server error' });
-      }
+      next(error);
     }
   };
 }

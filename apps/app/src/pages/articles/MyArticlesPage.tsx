@@ -44,7 +44,7 @@ export const MyArticlesPage: React.FC = () => {
   if (loading.articles) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="text-lg text-gray-600">Načítavam tvoje články...</div>
+        <div className="text-lg text-gray-600">Loading articles...</div>
       </div>
     );
   }
@@ -74,7 +74,7 @@ export const MyArticlesPage: React.FC = () => {
         loading={loading.articles}
         currentPage={1}
         totalPages={1}
-        showActions={true}
+        showEditDelete={true}
         onEdit={handleEdit}
         onDelete={handleDelete}
       />

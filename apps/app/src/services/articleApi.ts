@@ -43,6 +43,15 @@ class ArticleApiService {
     );
   }
 
+  async getAllArticlesForAdmin(
+    page: number = 1,
+    limit: number = 100
+  ): Promise<ArticleResponse> {
+    return apiService.get<ArticleResponse>(
+      `/articles/get-all?page=${page}&limit=${limit}`
+    );
+  }
+
   async updateArticle(
     articleId: number,
     updates: Partial<Article>

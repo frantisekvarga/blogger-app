@@ -6,11 +6,12 @@ import { AboutPage } from './pages/About';
 import { AllArticlesPage } from './pages/admin/AllArticlesPage';
 import { ArticleDetailPage } from './pages/articles/ArticleDetailPage';
 import { AuthorArticlesPage } from './pages/articles/AuthorArticlesPage';
+import { CreateArticlePage } from './pages/articles/CreateArticle';
 import { EditArticlePage } from './pages/articles/EditArticlePage';
 import { MyArticlesPage } from './pages/articles/MyArticlesPage';
+import { RecentPage } from './pages/articles/RecentPage';
 import { LoginPage, RegisterPage } from './pages/auth';
 import { HomePage } from './pages/HomePage';
-import { CreateArticlePage } from './pages/articles/CreateArticle';
 
 function App() {
   return (
@@ -23,10 +24,7 @@ function App() {
             element={<AuthorArticlesPage />}
           />
           <Route path={ROUTES.ARTICLE_DETAIL} element={<ArticleDetailPage />} />
-          <Route
-            path={ROUTES.RECENT_ARTICLES}
-            element={<div>Recent Articles Page - Coming Soon</div>}
-          />
+          <Route path={ROUTES.RECENT_ARTICLES} element={<RecentPage />} />
           <Route path={ROUTES.ABOUT} element={<AboutPage />} />
           <Route path={ROUTES.LOGIN} element={<LoginPage />} />
           <Route path={ROUTES.SIGNUP} element={<RegisterPage />} />
@@ -45,23 +43,23 @@ function App() {
                 <EditArticlePage />
               </ProtectedRoute>
             }
-            />
-            <Route
-              path={ROUTES.ALL_ARTICLES}
-              element={
-                <ProtectedRoute adminOnly>
-                  <AllArticlesPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path={ROUTES.CREATE_ARTICLE}
-              element={
-                <ProtectedRoute >
-                  <CreateArticlePage />
-                </ProtectedRoute>
-              }
-            />
+          />
+          <Route
+            path={ROUTES.ALL_ARTICLES}
+            element={
+              <ProtectedRoute adminOnly>
+                <AllArticlesPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path={ROUTES.CREATE_ARTICLE}
+            element={
+              <ProtectedRoute>
+                <CreateArticlePage />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </Layout>
     </Router>

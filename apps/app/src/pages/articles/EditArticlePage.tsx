@@ -32,14 +32,14 @@ export const EditArticlePage: React.FC = () => {
       await updateArticle(Number(articleId), { title, content });
       navigate(-1);
     } catch (err) {
-      alert('Chyba pri ukladaní zmien');
+      alert('Error saving changes');
     } finally {
       setSaving(false);
     }
   };
 
   if (loading.single || !currentArticle) {
-    return <div className="fs-5 text-secondary">Načítavam článok...</div>;
+    return <div className="fs-5 text-secondary">Loading article...</div>;
   }
 
   return (
@@ -66,7 +66,7 @@ export const EditArticlePage: React.FC = () => {
           />
         </div>
         <button type="submit" className="btn btn-primary" disabled={saving}>
-          {saving ? 'Ukladám...' : 'Uložiť zmeny'}
+          {saving ? 'Saving' : 'Save changes'}
         </button>
       </form>
     </div>

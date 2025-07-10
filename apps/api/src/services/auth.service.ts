@@ -1,6 +1,11 @@
 import bcrypt from 'bcryptjs';
 import { AppDataSource, User } from 'database';
-import jwt from 'jsonwebtoken';
+import jwt, { SignOptions } from 'jsonwebtoken';
+import {
+  InvalidCredentialsException,
+  InvalidTokenException,
+  UserAlreadyExistsException,
+} from '../types/exceptions';
 
 interface RegisterData {
   email: string;
@@ -21,8 +26,9 @@ interface AuthResult {
 export class AuthService {
   private userRepository = AppDataSource.getRepository(User);
   private jwtSecret = process.env.JWT_SECRET || 'your-secret-key';
+  private jwtExpiresIn: string = process.env.JWT_EXPIRES_IN || '24h';
 
-  async register(data: RegisterData): Promise<AuthResult> {
+  async register(data: RegisterData): Promise<{ user: User }> {
     const { email, name, password } = data;
 
     const existingUser = await this.userRepository.findOne({
@@ -30,7 +36,7 @@ export class AuthService {
     });
 
     if (existingUser) {
-      throw new Error('User with this email already exists');
+      throw new UserAlreadyExistsException(email);
     }
 
     // Hash password
@@ -46,11 +52,8 @@ export class AuthService {
 
     const savedUser = await this.userRepository.save(user);
 
-    const token = this.generateToken(savedUser);
-
     return {
       user: savedUser,
-      token,
     };
   }
 
@@ -62,12 +65,12 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new Error('Invalid credentials');
+      throw new InvalidCredentialsException();
     }
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
-      throw new Error('Invalid credentials');
+      throw new InvalidCredentialsException();
     }
 
     const token = this.generateToken(user);
@@ -87,12 +90,12 @@ export class AuthService {
       });
 
       if (!user) {
-        throw new Error('Invalid token');
+        throw new InvalidTokenException();
       }
 
       return user;
     } catch (error) {
-      throw new Error('Invalid token');
+      throw new InvalidTokenException();
     }
   }
 
@@ -100,9 +103,11 @@ export class AuthService {
     const payload = {
       userId: user.id,
       email: user.email,
+      name: user.name,
       role: user.role,
     };
 
-    return jwt.sign(payload, this.jwtSecret, { expiresIn: '24h' });
+    const options: SignOptions = { expiresIn: this.jwtExpiresIn as any };
+    return jwt.sign(payload, this.jwtSecret, options);
   }
 }

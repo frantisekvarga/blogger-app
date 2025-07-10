@@ -5,11 +5,11 @@ export const AboutPage: React.FC = () => {
     <div className="container py-5">
       <div className="row justify-content-center">
         <div className="col-lg-8">
-          <h1 className="display-4 fw-bold text-center mb-5">About Us</h1>
+          <h1 className="display-4 fw-bold text-center mb-5">Lorem Ipsum</h1>
 
           <div className="card border-0">
             <div className="card-body p-5">
-              <h2 className="h3 mb-4">Welcome to our blog</h2>
+              <h2 className="h3 mb-4">Lorem ipsum dolor sit amet</h2>
 
               <p className="lead mb-4">
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
@@ -30,7 +30,7 @@ export const AboutPage: React.FC = () => {
                 accusantium doloremque laudantium.
               </p>
 
-              <h3 className="h4 mb-3">Our Mission</h3>
+              <h3 className="h4 mb-3">Lorem ipsum dolor</h3>
               <p className="mb-4">
                 Totam rem aperiam, eaque ipsa quae ab illo inventore veritatis
                 et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim
@@ -38,12 +38,12 @@ export const AboutPage: React.FC = () => {
                 fugit.
               </p>
 
-              <h3 className="h4 mb-3">Our Values</h3>
+              <h3 className="h4 mb-3">Lorem ipsum</h3>
               <ul className="list-unstyled mb-4">
-                <li className="mb-2">• Quality and professionalism</li>
-                <li className="mb-2">• Innovative solutions</li>
-                <li className="mb-2">• Customer satisfaction</li>
-                <li className="mb-2">• Social responsibility</li>
+                <li className="mb-2">• Lorem ipsum dolor sit amet</li>
+                <li className="mb-2">• Consectetur adipiscing elit</li>
+                <li className="mb-2">• Sed do eiusmod tempor</li>
+                <li className="mb-2">• Incididunt ut labore</li>
               </ul>
 
               <p className="mb-0">

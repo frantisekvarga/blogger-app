@@ -26,6 +26,7 @@ export const RegisterPage: React.FC = () => {
         password,
         confirmPassword: passwordConfirmation,
       });
+      alert('Registration successful, please login');
       navigate(ROUTES.LOGIN);
     } catch (error) {
       console.error('Registration error:', error);

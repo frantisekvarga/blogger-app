@@ -55,6 +55,7 @@ interface ArticleContextType {
   state: ArticleState;
   // Articles operations
   fetchArticles: (page?: number) => Promise<void>;
+  fetchAllArticlesForAdmin: (page?: number) => Promise<void>;
   fetchFeaturedArticles: () => Promise<void>;
   fetchArticleById: (id: number) => Promise<void>;
   fetchArticlesByAuthor: (authorId: number) => Promise<void>;
@@ -63,7 +64,7 @@ interface ArticleContextType {
   deleteArticle: (id: number) => Promise<void>;
   // Filters and search
   setFilters: (filters: Partial<ArticleState['filters']>) => void;
-  searchArticles: (query: string) => Promise<void>;
+ 
   // Utility
   clearError: () => void;
   clearCurrentArticle: () => void;
@@ -231,14 +232,39 @@ export const ArticleProvider: React.FC<{ children: React.ReactNode }> = ({
         dispatch({
           type: 'SET_ERROR',
           payload:
-            error instanceof Error
-              ? error.message
-              : 'Chyba pri načítavaní článkov',
+            error instanceof Error ? error.message : 'Error fetching articles',
         });
       }
     },
     [state.pagination.itemsPerPage]
   );
+
+  const fetchAllArticlesForAdmin = useCallback(async (page: number = 1) => {
+    dispatch({
+      type: 'SET_LOADING',
+      payload: { key: 'articles', value: true },
+    });
+
+    try {
+      const response = await articleApi.getAllArticlesForAdmin(page, 100);
+
+      dispatch({ type: 'SET_ARTICLES', payload: response.articles });
+      dispatch({
+        type: 'SET_PAGINATION',
+        payload: {
+          currentPage: page,
+          totalPages: response.totalPages,
+          totalItems: response.total,
+        },
+      });
+    } catch (error) {
+      dispatch({
+        type: 'SET_ERROR',
+        payload:
+          error instanceof Error ? error.message : 'Error fetching articles',
+      });
+    }
+  }, []);
 
   const fetchFeaturedArticles = useCallback(async () => {
     dispatch({
@@ -255,7 +281,7 @@ export const ArticleProvider: React.FC<{ children: React.ReactNode }> = ({
         payload:
           error instanceof Error
             ? error.message
-            : 'Chyba pri načítavaní odporúčaných článkov',
+            : 'Error fetching featured articles',
       });
     }
   }, []);
@@ -272,7 +298,7 @@ export const ArticleProvider: React.FC<{ children: React.ReactNode }> = ({
         payload:
           error instanceof Error
             ? error.message
-            : 'Chyba pri načítavaní článku',
+            : 'Error fetching article by id',
       });
     }
   }, []);
@@ -287,12 +313,14 @@ export const ArticleProvider: React.FC<{ children: React.ReactNode }> = ({
       const response = await articleApi.getArticlesByAuthor(authorId);
       dispatch({ type: 'SET_ARTICLES', payload: response.articles });
     } catch (error) {
+      // Clear articles if the request fails
+      dispatch({ type: 'SET_ARTICLES', payload: [] });
       dispatch({
         type: 'SET_ERROR',
         payload:
           error instanceof Error
             ? error.message
-            : 'Chyba pri načítavaní článkov autora',
+            : 'Error fetching articles by author',
       });
     }
   }, []);
@@ -305,7 +333,7 @@ export const ArticleProvider: React.FC<{ children: React.ReactNode }> = ({
       });
 
       try {
-        // TODO: Implement when backend supports it
+    
         throw new Error('Creating articles is not supported yet');
       } catch (error) {
         dispatch({
@@ -353,7 +381,7 @@ export const ArticleProvider: React.FC<{ children: React.ReactNode }> = ({
       dispatch({
         type: 'SET_ERROR',
         payload:
-          error instanceof Error ? error.message : 'Chyba pri mazaní článku',
+          error instanceof Error ? error.message : 'Error deleting article',
       });
       throw error;
     }
@@ -366,23 +394,7 @@ export const ArticleProvider: React.FC<{ children: React.ReactNode }> = ({
     []
   );
 
-  const searchArticles = useCallback(async (query: string) => {
-    dispatch({
-      type: 'SET_LOADING',
-      payload: { key: 'articles', value: true },
-    });
-
-    try {
-      // TODO: Implement search when backend supports it
-      throw new Error('Searching is not supported yet');
-    } catch (error) {
-      dispatch({
-        type: 'SET_ERROR',
-        payload:
-          error instanceof Error ? error.message : 'Error searching articles',
-      });
-    }
-  }, []);
+  
 
   const clearError = useCallback(() => {
     dispatch({ type: 'CLEAR_ERROR' });
@@ -397,6 +409,7 @@ export const ArticleProvider: React.FC<{ children: React.ReactNode }> = ({
       value={{
         state,
         fetchArticles,
+        fetchAllArticlesForAdmin,
         fetchFeaturedArticles,
         fetchArticleById,
         fetchArticlesByAuthor,
@@ -404,9 +417,8 @@ export const ArticleProvider: React.FC<{ children: React.ReactNode }> = ({
         updateArticle,
         deleteArticle,
         setFilters,
-        searchArticles,
         clearError,
-        clearCurrentArticle,
+        clearCurrentArticle
       }}>
       {children}
     </ArticleContext.Provider>

@@ -12,10 +12,7 @@ export const HomePage: React.FC = () => {
 
   return (
     <div className="container py-4">
-      {/* Page Header */}
-      <h1>Featured Articles</h1>
-
-      {/* Articles List using ArticleList component */}
+      <h1 className="display-6 fw-bold mb-4">Featured Articles</h1>
       <ArticleList
         articles={featuredArticles}
         loading={loading.featured}

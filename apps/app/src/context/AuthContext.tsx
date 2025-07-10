@@ -1,11 +1,13 @@
 import React, { createContext, useEffect, useReducer } from 'react';
 import { apiService } from '../services/api';
 import { AuthState, LoginCredentials, RegisterData, User } from '../types';
+import { decodeToken, getStoredToken, storeToken, removeStoredToken } from '../utils';
 
 // Action types
 type AuthAction =
   | { type: 'AUTH_START' }
-  | { type: 'AUTH_SUCCESS'; payload: User }
+  | { type: 'AUTH_SUCCESS'; payload: User | null }
+  | { type: 'REGISTER_SUCCESS' }
   | { type: 'AUTH_ERROR'; payload: string }
   | { type: 'LOGOUT' }
   | { type: 'CLEAR_ERROR' };
@@ -41,6 +43,13 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
         ...state,
         user: action.payload,
         isAuthenticated: true,
+        isLoading: false,
+        error: null,
+      };
+    case 'REGISTER_SUCCESS':
+      return {
+        ...state,
+        isAuthenticated: false,
         isLoading: false,
         error: null,
       };
@@ -81,29 +90,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
-  // Check for existing token on mount and fetch user
   useEffect(() => {
-    const token = localStorage.getItem('authToken');
+    const token = getStoredToken();
+
     if (token) {
-      fetchUser(token);
+      const user = decodeToken(token);
+      if (user) {
+        dispatch({ type: 'AUTH_SUCCESS', payload: user });
+      } else {
+        logout();
+      }
     }
   }, []);
-
-  // Helper: fetch user from /auth/me
-  const fetchUser = async (token: string) => {
-    try {
-      const data = await apiService.get<{
-        success: boolean;
-        data: { user: User };
-      }>('/auth/me', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      localStorage.setItem('userData', JSON.stringify(data.data.user));
-      dispatch({ type: 'AUTH_SUCCESS', payload: data.data.user });
-    } catch (error) {
-      logout();
-    }
-  };
 
   const login = async (credentials: LoginCredentials) => {
     dispatch({ type: 'AUTH_START' });
@@ -112,13 +110,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         success: boolean;
         data: { user: User; token: string };
       }>('/auth/login', credentials);
-      localStorage.setItem('authToken', data.data.token);
-      localStorage.setItem('userData', JSON.stringify(data.data.user));
+
+      storeToken(data.data.token);
       dispatch({ type: 'AUTH_SUCCESS', payload: data.data.user });
     } catch (error: any) {
       dispatch({
         type: 'AUTH_ERROR',
-        payload: error.message || 'Chyba pri prihlasovaní',
+        payload: error.message || 'Error logging in',
       });
       throw error;
     }
@@ -129,23 +127,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     try {
       const resp = await apiService.post<{
         success: boolean;
-        data: { user: User; token: string };
+        data: { user: User };
       }>('/auth/register', data);
-      localStorage.setItem('authToken', resp.data.token);
-      localStorage.setItem('userData', JSON.stringify(resp.data.user));
-      dispatch({ type: 'AUTH_SUCCESS', payload: resp.data.user });
+      dispatch({ type: 'REGISTER_SUCCESS' });
     } catch (error: any) {
       dispatch({
         type: 'AUTH_ERROR',
-        payload: error.message || 'Chyba pri registrácii',
+        payload: error.message || 'Error registering',
       });
       throw error;
     }
   };
 
   const logout = () => {
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('userData');
+    removeStoredToken();
     dispatch({ type: 'LOGOUT' });
   };
 

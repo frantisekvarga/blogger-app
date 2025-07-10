@@ -1,4 +1,6 @@
-const API_BASE_URL = 'http://localhost:3333/api';
+import { getStoredToken } from '../utils';
+
+const API_BASE_URL = '/api';
 
 class ApiService {
   private baseUrl: string;
@@ -12,7 +14,7 @@ class ApiService {
     options: RequestInit = {}
   ): Promise<T> {
     const url = `${this.baseUrl}${endpoint}`;
-    const token = localStorage.getItem('authToken');
+    const token = getStoredToken();
 
     const config: RequestInit = {
       headers: {
