@@ -1,37 +1,22 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
-import { User } from './user.entity';
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
-@Entity('article')
+@Entity()
 export class Article {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'varchar', length: 150 })
+  @Column()
   title: string;
 
-  @Column({ type: 'text' })
-  content: string;
-
-  @Column({ type: 'text', name: 'image_url' })
+  @Column()
   image_url: string;
 
-  @Column({ type: 'int', name: 'user_id' })
+  @Column()
+  content: string;
+
+  @Column()
   user_id: number;
 
-  @Column({
-    type: 'timestamp',
-    name: 'published_at',
-    default: () => 'CURRENT_TIMESTAMP',
-  })
+  @Column()
   published_at: Date;
-
-  @ManyToOne(() => User, user => user.articles)
-  @JoinColumn({ name: 'user_id' })
-  author: User;
 }

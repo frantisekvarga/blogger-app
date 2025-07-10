@@ -1,11 +1,15 @@
-import { MigrationInterface, QueryRunner,Table ,TableForeignKey } from "typeorm";
+import {
+  MigrationInterface,
+  QueryRunner,
+  Table,
+  TableForeignKey,
+} from 'typeorm';
 
 export class CreateArticleTable1751970889193 implements MigrationInterface {
-
-    public async up(queryRunner: QueryRunner): Promise<void> {
-         await queryRunner.createTable(
+  public async up(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.createTable(
       new Table({
-        name: "article",
+        name: 'article',
         columns: [
           {
             name: 'id',
@@ -14,26 +18,26 @@ export class CreateArticleTable1751970889193 implements MigrationInterface {
             isGenerated: true,
           },
           {
-            name: "title",
-            type: "varchar",
-            length: "150",
+            name: 'title',
+            type: 'varchar',
+            length: '150',
           },
           {
-            name: "image_url",
-            type: "text",
+            name: 'image_url',
+            type: 'text',
           },
           {
-            name: "content",
-            type: "text",
+            name: 'content',
+            type: 'text',
           },
           {
-            name: "user_id",
-            type: "integer",
+            name: 'user_id',
+            type: 'integer',
           },
           {
-            name: "published_at",
-            type: "timestamp",
-            default: "CURRENT_TIMESTAMP",
+            name: 'published_at',
+            type: 'timestamp',
+            default: 'CURRENT_TIMESTAMP',
           },
         ],
       }),
@@ -41,19 +45,17 @@ export class CreateArticleTable1751970889193 implements MigrationInterface {
     );
 
     await queryRunner.createForeignKey(
-      "article",
+      'article',
       new TableForeignKey({
-        columnNames: ["user_id"],
-        referencedTableName: "user",
-        referencedColumnNames: ["id"],
-        onDelete: "CASCADE",
+        columnNames: ['user_id'],
+        referencedTableName: 'user',
+        referencedColumnNames: ['id'],
+        onDelete: 'CASCADE',
       })
     );
-    }
+  }
 
-    public async down(queryRunner: QueryRunner): Promise<void> {
-            await queryRunner.dropTable('article');
-
-    }
-
+  public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.dropTable('article');
+  }
 }
