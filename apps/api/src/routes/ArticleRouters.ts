@@ -9,5 +9,6 @@ router.get(
   '/public/users/:userId/articles/:articleId',
   articleController.getArticleDetailById
 );
+router.post('/users/:userId/articles', articleController.createArticle);
 
 export default router;

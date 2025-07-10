@@ -51,4 +51,39 @@ export class ArticleController {
       res.status(500).json({ error: 'Server error' });
     }
   };
+
+  createArticle = async (req: Request, res: Response): Promise<void> => {
+    const userId = Number(req.params.userId);
+
+    if (isNaN(userId)) {
+      res.status(400).json({ error: 'Invalid userId' });
+      return;
+    }
+
+    const { title, perex, imageUrl, content, isPublished } = req.body;
+
+    if (
+      !title ||
+      !perex ||
+      !imageUrl ||
+      !content ||
+      typeof isPublished !== 'boolean'
+    ) {
+      res.status(400).json({ error: 'Invalid article data' });
+      return;
+    }
+
+    try {
+      const newArticle = await this.articleService.createArticle(userId, {
+        title,
+        perex,
+        imageUrl,
+        content,
+        isPublished,
+      });
+      res.status(200).json(newArticle);
+    } catch (err) {
+      res.status(500).json({ error: 'Server error' });
+    }
+  };
 }
