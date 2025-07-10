@@ -17,7 +17,7 @@ export const MoreArticlesByAuthor: React.FC<MoreArticlesByAuthorProps> = ({ arti
   return (
     <div className="mt-4">
       <h5 className="fw-semibold mb-3">More articles by {authorName}</h5>
-      {articles.length > 0 ? (
+      {articles.length === 0 ? (
         <p className="text-muted pb-3 fst-italic small mb-0">
           This user has not published any other articles.
         </p>
