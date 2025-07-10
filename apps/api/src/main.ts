@@ -1,9 +1,8 @@
-
 import express from 'express';
 import * as path from 'path';
-import 'dotenv/config';
-import articleRouter from './routes/ArticleRouters';
+
 import { ServerController } from './controllers/ServerController';
+import articleRouter from './routes/ArticleRouters';
 
 const server = new ServerController();
 
