@@ -19,4 +19,17 @@ export class Article {
 
   @Column()
   published_at: Date;
+
+  @Column()
+  perex: string;
+
+  @Column({ name: 'is_published' })
+  isPublished: boolean;
+
+  @Column({ name: 'created_at' })
+  createdAt: Date;
+
+  @Column({ name: 'updated_at' })
+  updatedAt: Date;
+
 }
