@@ -29,9 +29,28 @@ class ApiService {
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      throw new Error(
-        errorData.message || `HTTP error! status: ${response.status}`
-      );
+      
+      let errorMessage = errorData.message;
+      if (!errorMessage) {
+        switch (response.status) {
+          case 401:
+            errorMessage = 'Wrong email or password';
+            break;
+          case 403:
+            errorMessage = 'Access denied';
+            break;
+          case 404:
+            errorMessage = 'Resource not found';
+            break;
+          case 500:
+            errorMessage = 'Internal server eerror';
+            break;
+          default:
+            errorMessage = `Error: ${response.status}`;
+        }
+      }
+      
+      throw new Error(errorMessage);
     }
 
     return response.json();

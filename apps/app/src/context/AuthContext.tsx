@@ -1,7 +1,12 @@
 import React, { createContext, useEffect, useReducer } from 'react';
 import { apiService } from '../services/api';
 import { AuthState, LoginCredentials, RegisterData, User } from '../types';
-import { decodeToken, getStoredToken, storeToken, removeStoredToken } from '../utils';
+import {
+  decodeToken,
+  getStoredToken,
+  removeStoredToken,
+  storeToken,
+} from '../utils';
 
 // Action types
 type AuthAction =

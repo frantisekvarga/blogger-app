@@ -1,10 +1,8 @@
-// Context providers
 export { AppProvider } from './AppProvider';
 export { ArticleProvider, useArticles } from './ArticleContext';
 export { AuthProvider } from './AuthContext';
 export { useAuth } from '../hooks/useAuth';
 
-// Re-export types for convenience
 export type {
   Article,
   Author,

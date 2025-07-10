@@ -36,7 +36,6 @@ export const MyArticlesPage: React.FC = () => {
     }
   };
 
-  // Filter articles by search term
   const filteredArticles = articles.filter(article =>
     article.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
