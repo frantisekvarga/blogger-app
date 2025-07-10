@@ -1,8 +1,10 @@
 import 'reflect-metadata';
-import { DataSource, DataSourceOptions } from 'typeorm';
-import { SeederOptions } from 'typeorm-extension';
-import * as entities from './entities';
 
+import type { DataSourceOptions } from 'typeorm';
+import { DataSource } from 'typeorm';
+import type { SeederOptions } from 'typeorm-extension';
+
+import * as entities from './entities';
 
 const options: DataSourceOptions & SeederOptions = {
   type: 'postgres',

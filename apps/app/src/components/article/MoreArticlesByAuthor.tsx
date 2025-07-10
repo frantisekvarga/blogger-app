@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+
 import type { RecentArticle } from '../../types/ArticleType';
 
 interface MoreArticlesByAuthorProps {
@@ -8,7 +9,11 @@ interface MoreArticlesByAuthorProps {
   authorName: string;
 }
 
-export const MoreArticlesByAuthor: React.FC<MoreArticlesByAuthorProps> = ({ articles, userId, authorName, }) => {
+export const MoreArticlesByAuthor: React.FC<MoreArticlesByAuthorProps> = ({
+  articles,
+  userId,
+  authorName,
+}) => {
   const navigate = useNavigate();
   const handleClick = (articleId: number) => {
     navigate(`/user/${userId}/article/${articleId}`);
@@ -23,19 +28,23 @@ export const MoreArticlesByAuthor: React.FC<MoreArticlesByAuthorProps> = ({ arti
         </p>
       ) : (
         <ul className="list-unstyled">
-          {articles.map((article) => (
+          {articles.map(article => (
             <li key={article.id} className="mb-3">
-              <div onClick={() => handleClick(article.id)} role="button" tabIndex={0} onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') handleClick(article.id);
-              }}
-                className="p-3 border rounded bg-light text-decoration-none text-dark article-hover" style={{ cursor: 'pointer' }} >
+              <div
+                onClick={() => handleClick(article.id)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={e => {
+                  if (e.key === 'Enter' || e.key === ' ')
+                    handleClick(article.id);
+                }}
+                className="p-3 border rounded bg-light text-decoration-none text-dark article-hover"
+                style={{ cursor: 'pointer' }}>
                 <h6 className="mb-1 fw-bold">{article.title}</h6>
                 <p className="mb-0 text-muted small">
                   {new Date(article.publishedAt).toLocaleDateString()}
                 </p>
-                <p className="mb-0 text-muted small">
-                  {article.perex}
-                </p>
+                <p className="mb-0 text-muted small">{article.perex}</p>
               </div>
             </li>
           ))}

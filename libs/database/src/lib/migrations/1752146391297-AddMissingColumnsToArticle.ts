@@ -1,7 +1,10 @@
-import { MigrationInterface, QueryRunner, TableColumn } from "typeorm";
+import type { MigrationInterface, QueryRunner } from 'typeorm';
+import { TableColumn } from 'typeorm';
 
-export class AddMissingColumnsToArticle1752146391297 implements MigrationInterface {
-   public async up(queryRunner: QueryRunner): Promise<void> {
+export class AddMissingColumnsToArticle1752146391297
+  implements MigrationInterface
+{
+  public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.addColumns('article', [
       new TableColumn({
         name: 'perex',

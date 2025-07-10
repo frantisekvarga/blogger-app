@@ -39,7 +39,7 @@ export class ArticleController {
       res.status(200).json({
         article,
         userName: user.name,
-        recentArticles: recentArticles.map((article) => ({
+        recentArticles: recentArticles.map(article => ({
           id: article.id,
           title: article.title,
           perex: article.perex,

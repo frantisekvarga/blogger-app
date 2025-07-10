@@ -23,4 +23,3 @@ export interface ArticleDetailResponse {
   userName: string;
   recentArticles: RecentArticle[];
 }
-
