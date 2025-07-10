@@ -6,11 +6,11 @@ const ArticleNotFound = () => {
         <>
             <Header />
             <main className="container my-5 pt-3">
-                <h1 className="text-center">Článok nebol nájdený</h1>
+                <h1 className="text-center">Article Not Found</h1>
                 <p className="text-center text-muted">
-                    Skontrolujte URL alebo sa vráťte späť na&nbsp;
+                    Please check the URL or go back to the&nbsp;
                     <Link to="/articles" className="article-link">
-                        zoznam článkov
+                        articles list
                     </Link>
                 </p>
             </main>

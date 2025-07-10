@@ -17,18 +17,8 @@ const Header = () => {
   return (
     <>
       <header
-        className="fixed-top bg-secondary text-white d-flex align-items-center px-3 py-3"
-        style={{
-          height: headerHeight,
-          transition: 'height 0.3s ease',
-          zIndex: 1050,
-        }}>
-        <h1
-          className="mb-0"
-          style={{
-            fontSize: scrolled ? '1.5rem' : '2.5rem',
-            transition: 'font-size 0.3s ease',
-          }}>
+        className="fixed-top bg-secondary text-white d-flex align-items-center px-3 py-3"style={{  height: headerHeight, transition: 'height 0.3s ease', zIndex: 1050, }}>
+        <h1 className="mb-0" style={{  fontSize: scrolled ? '1.5rem' : '2.5rem',  transition: 'font-size 0.3s ease',  }}>
           Blogger
         </h1>
       </header>

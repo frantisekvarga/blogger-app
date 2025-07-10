@@ -1,61 +1,35 @@
-import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { getArticleById } from '../services/ArticleService';
 import { ArticleImage } from '../components/article/ArticleImage';
 import Header from '../components/Header';
-import LoadingSpinner from '../components/shared/LoadingSpinner';
 import ReactMarkdown from 'react-markdown';
-import { RecentArticles } from '../components/article/RecentArticles';
+import { MoreArticlesByAuthor } from '../components/article/MoreArticlesByAuthor';
 import ArticleNotFound from '../components/article/ArticleNotFound';
 import type { ArticleDetailResponse } from '../types/ArticleType';
 
 
 
-
 export const ArticleDetailPage = () => {
   const { userId, articleId } = useParams<{ userId: string; articleId: string }>();
-  const [contentReady, setContentReady] = useState(false);
 
   const { data, isLoading, isError, error } = useQuery<ArticleDetailResponse>({
     queryKey: ['article', userId, articleId],
     queryFn: () => getArticleById(Number(userId), Number(articleId)),
     enabled: !!userId && !!articleId,
-    staleTime: 5 * 60 * 1000,
-    gcTime: 1000 * 60 * 60 * 24,
-    refetchOnWindowFocus: false,
+    staleTime: 15 * 60 * 1000,
+    retry: 0
   });
 
   const article = data?.article;
   const userName = data?.userName;
   const recentArticles = data?.recentArticles ?? [];
 
-  useEffect(() => {
-    if (!article?.image_url) return setContentReady(true);
 
-    const img = new Image();
-    img.src = article.image_url;
-    img.onload = () => setContentReady(true);
-    img.onerror = () => setContentReady(true);
-    return () => {
-      img.onload = null;
-      img.onerror = null;
-    };
-  }, [article]);
-
-  if ((isLoading || !contentReady) && !isError) {
-    return (
-      <>
-        <Header />
-        <LoadingSpinner />
-      </>
-    );
+  if (isError) {
+    return <ArticleNotFound />;
   }
-
-  if (isError || !article) {
-    if ((error as Error).message === 'Article not found') {
-      return <ArticleNotFound />;
-    }
+  if( !article){
     return null;
   }
 
@@ -69,11 +43,13 @@ export const ArticleDetailPage = () => {
             <p className="text-muted small">
               {userName} • {new Date(article.published_at ?? '').toLocaleDateString()}
             </p>
+            <p className="lead text-muted">{article.perex}</p>
             <div className="text-center my-4">
               <ArticleImage
                 src={article.image_url || ''}
                 alt={article.title}
                 className="img-fluid rounded d-block"
+                uniqueKey={article.id}
               />
             </div>
             <div className="markdown-content">
@@ -82,7 +58,7 @@ export const ArticleDetailPage = () => {
           </div>
 
           <div className="col-12 col-xl-4 mt-5 mt-xl-0 responsive-border-left">
-            <RecentArticles articles={recentArticles} />
+            <MoreArticlesByAuthor articles={recentArticles} userId={article.user_id} authorName={userName || 'author'}/>
           </div>
         </div>
       </main>
