@@ -7,6 +7,8 @@
   "dependencies": {
     "@tanstack/react-query": "^5.82.0",
     "@tanstack/react-query-devtools": "^5.81.5",
+    "@uiw/react-markdown-preview": "^5.1.4",
+    "@uiw/react-md-editor": "^4.0.7",
     "axios": "^1.10.0",
     "bootstrap": "^5.3.7",
     "react-markdown": "^10.1.0",
