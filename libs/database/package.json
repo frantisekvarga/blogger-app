@@ -5,6 +5,7 @@
     "node": "20"
   },
   "dependencies": {
+    "dotenv": "^17.1.0",
     "pg": "^8.11.5",
     "reflect-metadata": "^0.2.2",
     "typeorm": "^0.3.20",

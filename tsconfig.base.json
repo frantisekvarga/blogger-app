@@ -21,7 +21,7 @@
       "@nx-serverless-template/workspace-plugin": [
         "tools/workspace-plugin/src/index.ts"
       ],
-      "@database": ["libs/database/src/index.ts"]
+      "database": ["libs/database/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

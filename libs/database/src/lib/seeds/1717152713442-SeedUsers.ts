@@ -1,6 +1,6 @@
-import { DataSource } from 'typeorm';
-import { Seeder, SeederFactoryManager } from 'typeorm-extension';
-import { User } from 'database';
+import { DataSource } from 'typeorm'
+import { Seeder, SeederFactoryManager } from 'typeorm-extension'
+import { User } from '../entities/user.entity'
 
 export class SeedUsers1717152713442 implements Seeder {
   track = false;
