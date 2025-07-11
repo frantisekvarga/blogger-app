@@ -50,10 +50,8 @@ type ArticleAction =
   | { type: 'SET_PAGINATION'; payload: Partial<ArticleState['pagination']> }
   | { type: 'CLEAR_ERROR' };
 
-// Context interface
 interface ArticleContextType {
   state: ArticleState;
-  // Articles operations
   fetchArticles: (page?: number) => Promise<void>;
   fetchAllArticlesForAdmin: (page?: number) => Promise<void>;
   fetchFeaturedArticles: () => Promise<void>;
@@ -62,10 +60,8 @@ interface ArticleContextType {
   createArticle: (article: Omit<Article, 'id'>) => Promise<void>;
   updateArticle: (id: number, article: Partial<Article>) => Promise<void>;
   deleteArticle: (id: number) => Promise<void>;
-  // Filters and search
   setFilters: (filters: Partial<ArticleState['filters']>) => void;
  
-  // Utility
   clearError: () => void;
   clearCurrentArticle: () => void;
 }

@@ -27,7 +27,6 @@ app.use('/assets', express.static(path.join(__dirname, 'assets')));
 app.use('/api/articles', articleRoutes);
 app.use('/api/auth', authRoutes);
 
-
 app.use(errorHandler);
 
 // Start the server

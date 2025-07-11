@@ -17,7 +17,6 @@ type AuthAction =
   | { type: 'LOGOUT' }
   | { type: 'CLEAR_ERROR' };
 
-// Context interface
 interface AuthContextType {
   state: AuthState;
   login: (credentials: LoginCredentials) => Promise<void>;
@@ -26,7 +25,6 @@ interface AuthContextType {
   clearError: () => void;
 }
 
-// Initial state
 const initialState: AuthState = {
   user: null,
   isAuthenticated: false,
@@ -34,7 +32,6 @@ const initialState: AuthState = {
   error: null,
 };
 
-// Reducer
 const authReducer = (state: AuthState, action: AuthAction): AuthState => {
   switch (action.type) {
     case 'AUTH_START':
@@ -84,7 +81,6 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
   }
 };
 
-// Create context
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export { AuthContext };

@@ -56,12 +56,10 @@ class ApiService {
     return response.json();
   }
 
-  // GET request
   async get<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
     return this.request<T>(endpoint, { method: 'GET', ...options });
   }
 
-  // POST request
   async post<T>(
     endpoint: string,
     data?: any,
@@ -74,7 +72,6 @@ class ApiService {
     });
   }
 
-  // PUT request
   async put<T>(
     endpoint: string,
     data?: any,
@@ -87,12 +84,10 @@ class ApiService {
     });
   }
 
-  // DELETE request
   async delete<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
     return this.request<T>(endpoint, { method: 'DELETE', ...options });
   }
 
-  // PATCH request
   async patch<T>(
     endpoint: string,
     data?: any,

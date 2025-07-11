@@ -44,14 +44,12 @@ export const AuthorArticlesPage: React.FC = () => {
     );
   }
 
-  const authorIdNum = articles[0]?.user_id || authorId || 'Neznámy autor';
+  const authorIdNum = articles[0]?.user_id || authorId || 'Unknown author';
 
   return (
     <div className="container py-4">
-      {/* Author Header */}
       <h1 className="h4 mb-4 text-dark">Autor ID: {authorIdNum} blog</h1>
 
-      {/* Articles List using ArticleList component */}
       <ArticleList
         articles={articles}
         loading={loading.articles}

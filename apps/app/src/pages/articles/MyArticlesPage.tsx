@@ -52,7 +52,6 @@ export const MyArticlesPage: React.FC = () => {
     <div className="container py-4">
       <h1 className="display-6 fw-bold mb-4">My Articles</h1>
 
-      {/* Search Input */}
       <div className="mb-4 d-flex justify-content-center">
         <div className="input-group" style={{ maxWidth: 400 }}>
           <input

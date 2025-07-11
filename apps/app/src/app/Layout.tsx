@@ -7,9 +7,9 @@ interface LayoutProps {
 
 export const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
-    <div>
+    <>
       <Navigation />
       <main>{children}</main>
-    </div>
+    </>
   );
 };

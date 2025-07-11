@@ -2,7 +2,7 @@ import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { Layout } from './app/Layout';
 import { ProtectedRoute } from './components/common/ProtectedRoute';
 import { ROUTES } from './constants';
-import { AboutPage } from './pages/About';
+import { AboutPage } from './pages/common/About';
 import { AllArticlesPage } from './pages/admin/AllArticlesPage';
 import { ArticleDetailPage } from './pages/articles/ArticleDetailPage';
 import { AuthorArticlesPage } from './pages/articles/AuthorArticlesPage';
@@ -11,7 +11,7 @@ import { EditArticlePage } from './pages/articles/EditArticlePage';
 import { MyArticlesPage } from './pages/articles/MyArticlesPage';
 import { RecentPage } from './pages/articles/RecentPage';
 import { LoginPage, RegisterPage } from './pages/auth';
-import { HomePage } from './pages/HomePage';
+import { HomePage } from './pages/common/HomePage';
 
 function App() {
   return (

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
-import { ArticleList } from '../components/articles';
-import { useArticles } from '../context';
+import { ArticleList } from '../../components/articles';
+import { useArticles } from '../../context';
 
 export const HomePage: React.FC = () => {
   const { state, fetchFeaturedArticles } = useArticles();
