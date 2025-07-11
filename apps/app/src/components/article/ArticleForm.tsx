@@ -1,6 +1,14 @@
 import { useState } from "react";
 import MarkdownEditor from "./MarkdownEditor";
 import ImageUploader from "./ImageUploader";
+import { useMutation } from '@tanstack/react-query';
+import { createArticle } from "../../services/ArticleService";
+import { CreateArticleInput } from "../../types/ArticleType";
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { uploadImage } from '../../services/FileService';
+
+const BASE_URL = 'http://localhost:3333';
 
 const ArticleForm = () => {
   const [title, setTitle] = useState("");
@@ -9,33 +17,66 @@ const ArticleForm = () => {
   const [image, setImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const navigate = useNavigate();
+
+  const userId = 3;
 
   const validate = () => {
-  const newErrors: { [key: string]: string } = {};
-  if (!title.trim()) newErrors.title = "Title is required.";
-  if (!perex.trim()) newErrors.perex = "Perex is required.";
-  if (!content.trim()) newErrors.content = "Content is required.";
+    const newErrors: { [key: string]: string } = {};
+    if (!title.trim()) newErrors.title = "Title is required.";
+    if (!perex.trim()) newErrors.perex = "Perex is required.";
+    if (!content.trim()) newErrors.content = "Content is required.";
 
-  if (image && !image.type.startsWith("image/")) {
-    newErrors.image = "Uploaded file must be an image.";
+    if (image && !image.type.startsWith("image/")) {
+      newErrors.image = "Uploaded file must be an image.";
+    }
+    if (imagePreview === null) {
+      newErrors.image = "Image is required";
+    }
+    setErrors(newErrors);
+    return !Object.keys(newErrors).length;
+  };
+
+  const { mutate } = useMutation({
+    mutationFn: ({ userId, article }: { userId: number; article: CreateArticleInput }) =>
+      createArticle(userId, article),
+    onSuccess: () => {
+      toast.success('Article created successfully!');
+      navigate('/my-articles');
+    },
+    onError: () => {
+      toast.error('Something went wrong. Please try again.');
+    },
+  });
+
+
+
+  const handleSubmit = async (publish: boolean) => {
+  if (!validate()) return;
+
+  try {
+    let finalImageUrl = 'https://upload.wikimedia.org/wikipedia/commons/2/26/512pxIcon-sunset_photo_not_found.png';
+
+    if (image) {
+      const uploadedImagePath  = await uploadImage(image);
+      finalImageUrl = `${BASE_URL}${uploadedImagePath}`; 
+
+    }
+
+    const article: CreateArticleInput = {
+      title,
+      perex,
+      content,
+      imageUrl: finalImageUrl,
+      isPublished: publish,
+    };
+
+    mutate({ userId, article });
+  } catch (error) {
+    toast.error('Image upload failed. Please try again.');
   }
-   if (imagePreview === null) {
-    newErrors.image = "Image is required";
-  }
-  setErrors(newErrors);
-  return !Object.keys(newErrors).length;
 };
 
-
-  const handlePublish = () => {
-    if (!validate()) return;
-    console.log({ title, perex, content, image });
-  };
-
-  const handleSaveDraft = () => {
-    if (!validate()) return;
-    console.log(" draft", { title, perex, content, image });
-  };
 
   return (
     <form className="container mt-3">
@@ -75,7 +116,7 @@ const ArticleForm = () => {
         <label className="form-label fw-semibold">Featured image</label>
         <ImageUploader image={image} setImage={setImage} setImagePreview={setImagePreview} />
         {errors.image && !imagePreview && Object.keys(errors).includes("image") && <div className="text-danger small mt-1">{errors.image}</div>}
-        {imagePreview && delete errors.image &&  (
+        {imagePreview && delete errors.image && (
           <div className="mt-3 d-flex align-items-start gap-3">
             <p className="m-0 pt-1 fw-semibold">Preview:</p>
             <img
@@ -89,15 +130,15 @@ const ArticleForm = () => {
       </div>
 
       <div className="mb-4">
-        <MarkdownEditor content={content} setContent={setContent} onChange ={ () => delete errors.content} />
+        <MarkdownEditor content={content} setContent={setContent} onChange={() => delete errors.content} />
         {errors.content && <div className="text-danger small mt-1">{errors.content}</div>}
       </div>
 
       <div className="d-flex gap-4">
-        <button type="button" onClick={handlePublish} className="btn btn-primary">
+        <button type="button" onClick={() => handleSubmit(true)} className="btn btn-primary">
           Publish Article
         </button>
-        <button type="button" onClick={handleSaveDraft} className="btn btn-outline-secondary">
+        <button type="button" onClick={() => handleSubmit(false)} className="btn btn-outline-secondary">
           Save as Draft
         </button>
       </div>

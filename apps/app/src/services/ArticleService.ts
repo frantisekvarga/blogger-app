@@ -20,4 +20,25 @@ export const getArticleById = async (
     }
     throw new Error(`Failed to fetch article`);
   }
+
+
+};
+
+export const createArticle = async (
+  userId: number,
+  articleData: {
+    title: string;
+    perex: string;
+    imageUrl: string;
+    content: string;
+    isPublished: boolean;
+  }
+): Promise<ArticleDetailResponse> => {
+  try {
+    const response = await api.post<ArticleDetailResponse>( `/users/${userId}/articles`,articleData );
+    return response.data;
+  } catch (error) {
+    const axiosError = error as AxiosError;
+    throw new Error('Failed to create article: ',axiosError);
+  }
 };

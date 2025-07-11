@@ -23,3 +23,11 @@ export interface ArticleDetailResponse {
   userName: string;
   recentArticles: RecentArticle[];
 }
+
+export type CreateArticleInput = {
+  title: string;
+  perex: string;
+  imageUrl: string;
+  content: string;
+  isPublished: boolean;
+};

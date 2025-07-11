@@ -12,7 +12,8 @@
     "axios": "^1.10.0",
     "bootstrap": "^5.3.7",
     "react-markdown": "^10.1.0",
-    "react-router": "^6.23.1"
+    "react-router": "^6.23.1",
+    "react-toastify": "^11.0.5"
   },
   "devDependencies": {
     "@types/react-query": "^1.2.9"
