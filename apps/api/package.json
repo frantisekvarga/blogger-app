@@ -5,6 +5,10 @@
     "node": "20"
   },
   "devDependencies": {
-    "@types/express": "^4.17.21"
+    "@types/express": "^4.17.21",
+    "@types/formidable": "^3.4.5"
+  },
+  "dependencies": {
+    "formidable": "^3.5.4"
   }
 }

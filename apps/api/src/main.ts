@@ -9,5 +9,6 @@ const server = new ServerController();
 server.app.use(express.json());
 server.app.use('/assets', express.static(path.join(__dirname, 'assets')));
 server.app.use('/api', articleRouter);
+server.app.use('/uploads', express.static(path.resolve('apps/api/public/uploads')));
 
 server.startServer();
