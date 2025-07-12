@@ -10,6 +10,9 @@ import { errorHandler } from './middleware/errorHandler';
 import { articleRoutes } from './routes/article.routes';
 import { authRoutes } from './routes/auth.routes';
 
+import { ServerController } from './controllers/ServerController';
+import articleRouter from './routes/ArticleRouters';
+
 const app = express();
 
 AppDataSource.initialize()
@@ -29,10 +32,17 @@ app.use('/api/auth', authRoutes);
 
 app.use(errorHandler);
 
-// Start the server
+/* // Start the server
 const port = process.env.PORT || 3333;
 const server = app.listen(port, () => {
   console.log(`Server listening at http://localhost:${port}/api`);
 });
 
 server.on('error', console.error);
+server.app.use(express.json());
+server.app.use('/assets', express.static(path.join(__dirname, 'assets')));
+server.app.use('/api', articleRouter);
+server.app.use('/uploads', express.static(path.resolve('apps/api/public/uploads')));
+
+server.startServer();
+ */
