@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArticleList } from '../../components/articles';
+import { ArticleList } from '../../components/article';
 import { useArticles, useAuth } from '../../context';
+import { useDebounce } from '../../hooks';
 import { Article } from '../../types';
 
 export const MyArticlesPage: React.FC = () => {
@@ -15,12 +16,13 @@ export const MyArticlesPage: React.FC = () => {
   const userId = authState.user?.id;
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
   useEffect(() => {
     if (userId) {
-      fetchArticlesByAuthor(userId);
+      fetchArticlesByAuthor(userId, debouncedSearchTerm);
     }
-  }, [userId, fetchArticlesByAuthor]);
+  }, [userId, fetchArticlesByAuthor, debouncedSearchTerm]);
 
   const handleEdit = (article: Article) => {
     navigate(`/edit-article/${article.id}`);
@@ -36,9 +38,9 @@ export const MyArticlesPage: React.FC = () => {
     }
   };
 
-  const filteredArticles = articles.filter(article =>
-    article.title.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const handleSearch = () => {
+    // Search sa spustí automaticky cez useEffect keď sa zmení debouncedSearchTerm
+  };
 
   if (loading.articles) {
     return (
@@ -60,15 +62,19 @@ export const MyArticlesPage: React.FC = () => {
             placeholder="Search articles by title..."
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
+            onKeyPress={e => e.key === 'Enter' && handleSearch()}
           />
-          <button className="btn btn-outline-secondary" type="button">
+          <button
+            className="btn btn-outline-secondary"
+            type="button"
+            onClick={handleSearch}>
             Search
           </button>
         </div>
       </div>
 
       <ArticleList
-        articles={filteredArticles}
+        articles={articles}
         loading={loading.articles}
         currentPage={1}
         totalPages={1}

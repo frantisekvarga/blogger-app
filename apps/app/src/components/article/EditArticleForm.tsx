@@ -1,27 +1,30 @@
 import { useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../hooks/useAuth';
-import { createArticle } from '../../services/ArticleService';
+import { useArticles } from '../../context';
 import { uploadImage } from '../../services/FileService';
-import { CreateArticleInput } from '../../types/ArticleType';
+import { Article } from '../../types';
 import ImageUploader from './ImageUploader';
 import MarkdownEditor from './MarkdownEditor';
 
 const BASE_URL = 'http://localhost:3333';
 
-const ArticleForm = () => {
-  const [title, setTitle] = useState('');
-  const [perex, setPerex] = useState('');
-  const [content, setContent] = useState('');
-  const [image, setImage] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const navigate = useNavigate();
-  const { state: authState } = useAuth();
+interface EditArticleFormProps {
+  article: Article;
+}
 
-  const userId = authState.user?.id;
+const EditArticleForm: React.FC<EditArticleFormProps> = ({ article }) => {
+  const [title, setTitle] = useState(article.title || '');
+  const [perex, setPerex] = useState(article.perex || '');
+  const [content, setContent] = useState(article.content || '');
+  const [image, setImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(
+    article.image_url || null
+  );
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [isUpdating, setIsUpdating] = useState(false);
+  const navigate = useNavigate();
+  const { updateArticle } = useArticles();
 
   const validate = () => {
     const newErrors: { [key: string]: string } = {};
@@ -32,7 +35,9 @@ const ArticleForm = () => {
     if (image && !image.type.startsWith('image/')) {
       newErrors.image = 'Uploaded file must be an image.';
     }
-    
+    if (!imagePreview) {
+      newErrors.image = 'Image is required';
+    }
     setErrors(newErrors);
     return !Object.keys(newErrors).length;
   };
@@ -40,36 +45,30 @@ const ArticleForm = () => {
   const handleSubmit = async (publish: boolean) => {
     if (!validate()) return;
 
-    if (!userId) {
-      toast.error('You must be logged in to create an article.');
-      return;
-    }
-
-    setIsSubmitting(true);
+    setIsUpdating(true);
     try {
-      let finalImageUrl =
-        'https://upload.wikimedia.org/wikipedia/commons/2/26/512pxIcon-sunset_photo_not_found.png';
+      let finalImageUrl = article.image_url;
 
       if (image) {
         const uploadedImagePath = await uploadImage(image);
         finalImageUrl = `${BASE_URL}${uploadedImagePath}`;
       }
 
-      const article: CreateArticleInput = {
+      const updates: Partial<Article> = {
         title,
         perex,
         content,
-        imageUrl: finalImageUrl,
+        image_url: finalImageUrl,
         isPublished: publish,
       };
 
-      await createArticle(userId, article);
-      toast.success('Article created successfully!');
+      await updateArticle(article.id, updates);
+      toast.success('Article updated successfully!');
       navigate('/my-articles');
     } catch (error) {
       toast.error('Something went wrong. Please try again.');
     } finally {
-      setIsSubmitting(false);
+      setIsUpdating(false);
     }
   };
 
@@ -150,20 +149,27 @@ const ArticleForm = () => {
         <button
           type="button"
           onClick={() => handleSubmit(true)}
-          disabled={isSubmitting}
+          disabled={isUpdating}
           className="btn btn-primary">
-          {isSubmitting ? 'Creating...' : 'Publish Article'}
+          {isUpdating ? 'Updating...' : 'Publish Article'}
         </button>
         <button
           type="button"
           onClick={() => handleSubmit(false)}
-          disabled={isSubmitting}
+          disabled={isUpdating}
           className="btn btn-outline-secondary">
-          {isSubmitting ? 'Saving...' : 'Save as Draft'}
+          {isUpdating ? 'Saving...' : 'Save as Draft'}
+        </button>
+        <button
+          type="button"
+          onClick={() => navigate(-1)}
+          disabled={isUpdating}
+          className="btn btn-outline-danger">
+          Cancel
         </button>
       </div>
     </form>
   );
 };
 
-export default ArticleForm;
+export default EditArticleForm;

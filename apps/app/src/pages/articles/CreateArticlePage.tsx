@@ -1,10 +1,10 @@
-import ArticleForm from '../components/article/ArticleForm';
-import Header from '../components/Header';
+import ArticleForm from '../../components/article/ArticleForm';
+
 
 const CreateArticlePage = () => {
   return (
     <>
-    <Header/>
+    
     <div className="container mx-auto py-4">
       <h1>Create New Article</h1>
       <ArticleForm />

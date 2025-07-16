@@ -15,10 +15,11 @@ class ApiService {
   ): Promise<T> {
     const url = `${this.baseUrl}${endpoint}`;
     const token = getStoredToken();
+    const isFormData = options.body instanceof FormData;
 
     const config: RequestInit = {
       headers: {
-        'Content-Type': 'application/json',
+        ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
         ...options.headers,
       },
@@ -29,27 +30,27 @@ class ApiService {
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      
-      let errorMessage = errorData.message;
+
+      let errorMessage = errorData.error || errorData.message;
       if (!errorMessage) {
         switch (response.status) {
           case 401:
-            errorMessage = 'Wrong email or password';
+            errorMessage = 'Invalid email or password';
             break;
           case 403:
             errorMessage = 'Access denied';
             break;
           case 404:
-            errorMessage = 'Resource not found';
+            errorMessage = 'Author not found';
             break;
           case 500:
-            errorMessage = 'Internal server eerror';
+            errorMessage = 'Internal error';
             break;
           default:
             errorMessage = `Error: ${response.status}`;
         }
       }
-      
+
       throw new Error(errorMessage);
     }
 
@@ -65,9 +66,11 @@ class ApiService {
     data?: any,
     options: RequestInit = {}
   ): Promise<T> {
+    const isFormData = data instanceof FormData;
+
     return this.request<T>(endpoint, {
       method: 'POST',
-      body: data ? JSON.stringify(data) : undefined,
+      body: data ? (isFormData ? data : JSON.stringify(data)) : undefined,
       ...options,
     });
   }

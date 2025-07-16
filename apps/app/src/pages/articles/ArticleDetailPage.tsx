@@ -1,91 +1,101 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import ReactMarkdown from 'react-markdown';
 import { useParams } from 'react-router-dom';
-import { RelatedArticles } from '../../components/articles';
-import { useArticles } from '../../context';
-import { articleApi } from '../../services/articleApi';
 
-export const ArticleDetailPage: React.FC = () => {
-  const { articleId } = useParams<{ articleId: string }>();
-  const { state, fetchArticleById, clearCurrentArticle } = useArticles();
-  const { currentArticle, loading } = state;
-  const [authorArticles, setAuthorArticles] = useState<any[]>([]);
+import { ArticleImage } from '../../components/article/ArticleImage';
+import ArticleNotFound from '../../components/article/ArticleNotFound';
+import { MoreArticlesByAuthor } from '../../components/article/MoreArticlesByAuthor';
+
+import { getArticleById } from '../../services/ArticleService';
+import type { ArticleDetailResponse } from '../../types/ArticleType';
+
+export const ArticleDetailPage = () => {
+  const { userId, articleId } = useParams<{
+    userId: string;
+    articleId: string;
+  }>();
+
+  const [data, setData] = useState<ArticleDetailResponse | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (articleId) {
-      fetchArticleById(parseInt(articleId));
-    }
-    return () => {
-      clearCurrentArticle();
-    };
-  }, [articleId, fetchArticleById, clearCurrentArticle]);
+    const fetchArticle = async () => {
+      if (!userId || !articleId) return;
 
-  useEffect(() => {
-    const fetchRelated = async () => {
-      if (currentArticle?.user_id) {
-        const res = await articleApi.getArticlesByAuthor(
-          currentArticle.user_id
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        const response = await getArticleById(
+          Number(userId),
+          Number(articleId)
         );
-        
-        setAuthorArticles(res.articles.filter(a => a.id !== currentArticle.id));
-      } else {
-        setAuthorArticles([]);
+        setData(response);
+      } catch (err) {
+        setError(
+          err instanceof Error ? err.message : 'Error loading article'
+        );
+        console.error('Error fetching article:', err);
+      } finally {
+        setIsLoading(false);
       }
     };
-    fetchRelated();
-  }, [currentArticle]);
 
-  if (loading.single) {
+    fetchArticle();
+  }, [userId, articleId]);
+
+  if (isLoading) {
     return (
-      <div
-        className="d-flex justify-content-center align-items-center"
-        style={{ minHeight: '16rem' }}>
-        <div className="fs-5 text-secondary">Loading article...</div>
+      <div className="container my-5 pt-3">
+        <div className="text-center">
+          <div className="fs-5 text-secondary">Loading article...</div>
+        </div>
       </div>
     );
   }
 
-  if (!currentArticle) {
-    return (
-      <div
-        className="d-flex justify-content-center align-items-center"
-        style={{ minHeight: '16rem' }}>
-        <div className="fs-5 text-secondary">Article not found</div>
-      </div>
-    );
+  if (error || !data) {
+    return <ArticleNotFound />;
   }
+
+  const { article, userName, recentArticles } = data;
 
   return (
-    <div className="container py-4">
-      <div className="row justify-content-center">
-        <div className="col-lg-8 col-12 mb-4">
-          <h1 className="display-5 fw-bold mb-2 text-dark">
-            {currentArticle.title}
-          </h1>
-          <div className="mb-3 text-muted small">
-            <span>
-              {new Date(currentArticle.published_at).toLocaleDateString(
-                'sk-SK'
-              )}
-            </span>
+    <>
+      <main className="container my-5 pt-3">
+        <div className="row">
+          <div className="col-12 col-xl-8">
+            <h1 className="fw-bold mb-2">{article.title}</h1>
+            <p className="text-muted small">
+              {userName} •{' '}
+              {new Date(article.published_at ?? '').toLocaleDateString()}
+            </p>
+            <p className="lead text-muted">{article.perex}</p>
+            <div className="text-center my-4">
+              <ArticleImage
+                src={article.image_url || ''}
+                alt={article.title}
+                className="img-fluid rounded d-block"
+                uniqueKey={article.id}
+              />
+            </div>
+            <div className="markdown-content">
+              <ReactMarkdown>{article.content}</ReactMarkdown>
+            </div>
           </div>
 
-          <img
-            src={
-              currentArticle.image_url ||
-              'https://placehold.co/800x400?text=Obrazok'
-            }
-            alt="Article image"
-            className="img-fluid rounded mb-4 w-100"
-            style={{ maxHeight: 400, objectFit: 'cover' }}
-          />
-          <article
-            className="fs-5 lh-lg text-dark"
-            style={{ whiteSpace: 'pre-line' }}>
-            {currentArticle.content}
-          </article>
+          <div className="col-12 col-xl-4 mt-5 mt-xl-0 responsive-border-left">
+            <MoreArticlesByAuthor
+              articles={recentArticles}
+              userId={article.user_id}
+              authorName={userName || 'author'}
+            />
+          </div>
         </div>
-        <RelatedArticles articles={authorArticles} />
-      </div>
-    </div>
+      </main>
+    </>
   );
 };
+
+export default ArticleDetailPage;

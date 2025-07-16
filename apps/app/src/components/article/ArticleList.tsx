@@ -68,3 +68,5 @@ export const ArticleList: React.FC<ArticleListProps> = ({
     </div>
   );
 };
+
+export default ArticleList;

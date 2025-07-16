@@ -10,5 +10,9 @@ export interface Article {
   image_url: string;
   user_id: number;
   published_at: string;
+  perex?: string;
+  isPublished?: boolean;
+  created_at?: string;
+  updated_at?: string;
   author?: Author;
 }

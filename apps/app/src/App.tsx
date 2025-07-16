@@ -2,16 +2,20 @@ import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { Layout } from './app/Layout';
 import { ProtectedRoute } from './components/common/ProtectedRoute';
 import { ROUTES } from './constants';
-import { AboutPage } from './pages/common/About';
 import { AllArticlesPage } from './pages/admin/AllArticlesPage';
 import { ArticleDetailPage } from './pages/articles/ArticleDetailPage';
 import { AuthorArticlesPage } from './pages/articles/AuthorArticlesPage';
-import { CreateArticlePage } from './pages/articles/CreateArticle';
+import CreateArticlePage from './pages/articles/CreateArticlePage';
+import { DraftsPage } from './pages/articles/DraftsPage';
 import { EditArticlePage } from './pages/articles/EditArticlePage';
 import { MyArticlesPage } from './pages/articles/MyArticlesPage';
 import { RecentPage } from './pages/articles/RecentPage';
 import { LoginPage, RegisterPage } from './pages/auth';
+import { ForgotPasswordPage } from './pages/auth/ForgotPasswordPage';
+import { ResetPasswordPage } from './pages/auth/ResetPasswordPage';
+import { AboutPage } from './pages/common/About';
 import { HomePage } from './pages/common/HomePage';
+import { UserProfilePage } from './pages/user/UserProfilePage';
 
 function App() {
   return (
@@ -28,6 +32,8 @@ function App() {
           <Route path={ROUTES.ABOUT} element={<AboutPage />} />
           <Route path={ROUTES.LOGIN} element={<LoginPage />} />
           <Route path={ROUTES.SIGNUP} element={<RegisterPage />} />
+          <Route path={ROUTES.FORGOT_PASSWORD} element={<ForgotPasswordPage />} />
+          <Route path={ROUTES.RESET_PASSWORD} element={<ResetPasswordPage />} />
           <Route
             path={ROUTES.MY_ARTICLES}
             element={
@@ -57,6 +63,22 @@ function App() {
             element={
               <ProtectedRoute>
                 <CreateArticlePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path={ROUTES.DRAFTS}
+            element={
+              <ProtectedRoute>
+                <DraftsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path={ROUTES.USER_PROFILE}
+            element={
+              <ProtectedRoute>
+                <UserProfilePage />
               </ProtectedRoute>
             }
           />

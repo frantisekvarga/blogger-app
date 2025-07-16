@@ -41,6 +41,14 @@ export class MissingTokenException extends AuthException {
   }
 }
 
+export class UnauthorizedException extends AuthException {
+  constructor(action?: string) {
+    const message = action ? `Unauthorized to ${action}` : 'Unauthorized';
+    super(message, 401, 'UNAUTHORIZED');
+    this.name = 'UnauthorizedException';
+  }
+}
+
 export class ValidationException extends Error {
   constructor(
     message: string,
@@ -77,6 +85,24 @@ export class PasswordMismatchException extends ValidationException {
   }
 }
 
+export class InvalidParametersException extends ValidationException {
+  constructor(parameters: string[]) {
+    super(
+      `Invalid parameters: ${parameters.join(', ')}`,
+      400,
+      'INVALID_PARAMETERS'
+    );
+    this.name = 'InvalidParametersException';
+  }
+}
+
+export class InvalidArticleDataException extends ValidationException {
+  constructor() {
+    super('Invalid article data provided', 400, 'INVALID_ARTICLE_DATA');
+    this.name = 'InvalidArticleDataException';
+  }
+}
+
 export class ArticleException extends Error {
   constructor(
     message: string,
@@ -102,9 +128,66 @@ export class AuthorNotFoundException extends ArticleException {
   }
 }
 
-export class UnauthorizedException extends ArticleException {
+export class ArticleUnauthorizedException extends ArticleException {
   constructor(action: string) {
     super(`Unauthorized to ${action} this article`, 403, 'UNAUTHORIZED');
-    this.name = 'UnauthorizedException';
+    this.name = 'ArticleUnauthorizedException';
+  }
+}
+
+export class RequestNotFoundException extends ArticleException {
+  constructor() {
+    super('Request not found', 404, 'REQUEST_NOT_FOUND');
+    this.name = 'RequestNotFoundException';
+  }
+}
+
+export class FileException extends Error {
+  constructor(
+    message: string,
+    public statusCode: number = 500,
+    public code?: string
+  ) {
+    super(message);
+    this.name = 'FileException';
+  }
+}
+
+export class UploadErrorException extends FileException {
+  constructor() {
+    super('Upload error occurred', 400, 'UPLOAD_ERROR');
+    this.name = 'UploadErrorException';
+  }
+}
+
+export class InvalidFileException extends FileException {
+  constructor() {
+    super('Invalid file provided', 400, 'INVALID_FILE');
+    this.name = 'InvalidFileException';
+  }
+}
+
+export class ServerException extends Error {
+  constructor(
+    message: string,
+    public statusCode: number = 500,
+    public code?: string
+  ) {
+    super(message);
+    this.name = 'ServerException';
+  }
+}
+
+export class DatabaseException extends ServerException {
+  constructor() {
+    super('Database initialization failed', 500, 'DB_INIT_ERROR');
+    this.name = 'DatabaseException';
+  }
+}
+
+export class InternalServerException extends ServerException {
+  constructor() {
+    super('Internal server error', 500, 'INTERNAL_SERVER_ERROR');
+    this.name = 'InternalServerException';
   }
 }

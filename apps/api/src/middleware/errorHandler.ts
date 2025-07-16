@@ -2,6 +2,8 @@ import { NextFunction, Request, Response } from 'express';
 import {
   ArticleException,
   AuthException,
+  FileException,
+  ServerException,
   ValidationException,
 } from '../types/exceptions';
 
@@ -28,6 +30,20 @@ export function errorHandler(
   }
 
   if (error instanceof ValidationException) {
+    return res.status(error.statusCode).json({
+      error: error.message,
+      code: error.code,
+    });
+  }
+
+  if (error instanceof FileException) {
+    return res.status(error.statusCode).json({
+      error: error.message,
+      code: error.code,
+    });
+  }
+
+  if (error instanceof ServerException) {
     return res.status(error.statusCode).json({
       error: error.message,
       code: error.code,

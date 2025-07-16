@@ -52,16 +52,16 @@ type ArticleAction =
 
 interface ArticleContextType {
   state: ArticleState;
-  fetchArticles: (page?: number) => Promise<void>;
-  fetchAllArticlesForAdmin: (page?: number) => Promise<void>;
+  fetchArticles: (page?: number, search?: string) => Promise<void>;
+  fetchAllArticlesForAdmin: (page?: number, search?: string) => Promise<void>;
   fetchFeaturedArticles: () => Promise<void>;
   fetchArticleById: (id: number) => Promise<void>;
-  fetchArticlesByAuthor: (authorId: number) => Promise<void>;
+  fetchArticlesByAuthor: (authorId: number, search?: string) => Promise<void>;
   createArticle: (article: Omit<Article, 'id'>) => Promise<void>;
   updateArticle: (id: number, article: Partial<Article>) => Promise<void>;
   deleteArticle: (id: number) => Promise<void>;
   setFilters: (filters: Partial<ArticleState['filters']>) => void;
- 
+
   clearError: () => void;
   clearCurrentArticle: () => void;
 }
@@ -203,7 +203,7 @@ export const ArticleProvider: React.FC<{ children: React.ReactNode }> = ({
   const [state, dispatch] = useReducer(articleReducer, initialState);
 
   const fetchArticles = useCallback(
-    async (page: number = 1) => {
+    async (page: number = 1, search?: string) => {
       dispatch({
         type: 'SET_LOADING',
         payload: { key: 'articles', value: true },
@@ -212,7 +212,8 @@ export const ArticleProvider: React.FC<{ children: React.ReactNode }> = ({
       try {
         const response = await articleApi.getAllArticles(
           page,
-          state.pagination.itemsPerPage
+          state.pagination.itemsPerPage,
+          search
         );
 
         dispatch({ type: 'SET_ARTICLES', payload: response.articles });
@@ -235,32 +236,39 @@ export const ArticleProvider: React.FC<{ children: React.ReactNode }> = ({
     [state.pagination.itemsPerPage]
   );
 
-  const fetchAllArticlesForAdmin = useCallback(async (page: number = 1) => {
-    dispatch({
-      type: 'SET_LOADING',
-      payload: { key: 'articles', value: true },
-    });
-
-    try {
-      const response = await articleApi.getAllArticlesForAdmin(page, 100);
-
-      dispatch({ type: 'SET_ARTICLES', payload: response.articles });
+  const fetchAllArticlesForAdmin = useCallback(
+    async (page: number = 1, search?: string) => {
       dispatch({
-        type: 'SET_PAGINATION',
-        payload: {
-          currentPage: page,
-          totalPages: response.totalPages,
-          totalItems: response.total,
-        },
+        type: 'SET_LOADING',
+        payload: { key: 'articles', value: true },
       });
-    } catch (error) {
-      dispatch({
-        type: 'SET_ERROR',
-        payload:
-          error instanceof Error ? error.message : 'Error fetching articles',
-      });
-    }
-  }, []);
+
+      try {
+        const response = await articleApi.getAllArticlesForAdmin(
+          page,
+          state.pagination.itemsPerPage,
+          search
+        );
+
+        dispatch({ type: 'SET_ARTICLES', payload: response.articles });
+        dispatch({
+          type: 'SET_PAGINATION',
+          payload: {
+            currentPage: page,
+            totalPages: response.totalPages,
+            totalItems: response.total,
+          },
+        });
+      } catch (error) {
+        dispatch({
+          type: 'SET_ERROR',
+          payload:
+            error instanceof Error ? error.message : 'Error fetching articles',
+        });
+      }
+    },
+    []
+  );
 
   const fetchFeaturedArticles = useCallback(async () => {
     dispatch({
@@ -299,27 +307,29 @@ export const ArticleProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }, []);
 
-  const fetchArticlesByAuthor = useCallback(async (authorId: number) => {
-    dispatch({
-      type: 'SET_LOADING',
-      payload: { key: 'articles', value: true },
-    });
-
-    try {
-      const response = await articleApi.getArticlesByAuthor(authorId);
-      dispatch({ type: 'SET_ARTICLES', payload: response.articles });
-    } catch (error) {
-      // Clear articles if the request fails
-      dispatch({ type: 'SET_ARTICLES', payload: [] });
+  const fetchArticlesByAuthor = useCallback(
+    async (authorId: number, search?: string) => {
       dispatch({
-        type: 'SET_ERROR',
-        payload:
-          error instanceof Error
-            ? error.message
-            : 'Error fetching articles by author',
+        type: 'SET_LOADING',
+        payload: { key: 'articles', value: true },
       });
-    }
-  }, []);
+
+      try {
+        const response = await articleApi.getArticlesByAuthor(authorId, search);
+        dispatch({ type: 'SET_ARTICLES', payload: response.articles });
+      } catch (error) {
+        dispatch({ type: 'SET_ARTICLES', payload: [] });
+        dispatch({
+          type: 'SET_ERROR',
+          payload:
+            error instanceof Error
+              ? error.message
+              : 'Error fetching articles by author',
+        });
+      }
+    },
+    []
+  );
 
   const createArticle = useCallback(
     async (articleData: Omit<Article, 'id'>) => {
@@ -329,7 +339,6 @@ export const ArticleProvider: React.FC<{ children: React.ReactNode }> = ({
       });
 
       try {
-    
         throw new Error('Creating articles is not supported yet');
       } catch (error) {
         dispatch({
@@ -390,8 +399,6 @@ export const ArticleProvider: React.FC<{ children: React.ReactNode }> = ({
     []
   );
 
-  
-
   const clearError = useCallback(() => {
     dispatch({ type: 'CLEAR_ERROR' });
   }, []);
@@ -414,7 +421,7 @@ export const ArticleProvider: React.FC<{ children: React.ReactNode }> = ({
         deleteArticle,
         setFilters,
         clearError,
-        clearCurrentArticle
+        clearCurrentArticle,
       }}>
       {children}
     </ArticleContext.Provider>

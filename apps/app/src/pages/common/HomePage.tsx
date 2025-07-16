@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { ArticleList } from '../../components/articles';
+import { ArticleList } from '../../components/article';
 import { useArticles } from '../../context';
 
 export const HomePage: React.FC = () => {

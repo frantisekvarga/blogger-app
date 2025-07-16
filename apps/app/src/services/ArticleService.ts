@@ -1,27 +1,21 @@
-import type { AxiosError } from 'axios';
-
 import type { ArticleDetailResponse } from '../types/ArticleType';
-import api from './Api';
+import { apiService } from './api';
 
 export const getArticleById = async (
   userId: number,
   articleId: number
 ): Promise<ArticleDetailResponse> => {
   try {
-    const response = await api.get<ArticleDetailResponse>(
-      `/public/users/${userId}/articles/${articleId}`
+    const response = await apiService.get<ArticleDetailResponse>(
+      `/articles/public/users/${userId}/articles/${articleId}`
     );
-    return response.data;
+    return response;
   } catch (error) {
-    const axiosError = error as AxiosError;
-
-    if (axiosError.response?.status === 404) {
+    if (error instanceof Error && error.message.includes('404')) {
       throw new Error('Article not found');
     }
     throw new Error(`Failed to fetch article`);
   }
-
-
 };
 
 export const createArticle = async (
@@ -35,10 +29,12 @@ export const createArticle = async (
   }
 ): Promise<ArticleDetailResponse> => {
   try {
-    const response = await api.post<ArticleDetailResponse>( `/users/${userId}/articles`,articleData );
-    return response.data;
+    const response = await apiService.post<ArticleDetailResponse>(
+      `/articles/users/${userId}/articles`,
+      articleData
+    );
+    return response;
   } catch (error) {
-    const axiosError = error as AxiosError;
-    throw new Error('Failed to create article: ',axiosError);
+    throw new Error('Failed to create article');
   }
 };

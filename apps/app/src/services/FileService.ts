@@ -1,5 +1,5 @@
 import type { AxiosError } from 'axios';
-import api from './Api';
+import axios from 'axios';
 
 type UploadImageResponse = {
   imageUrl: string;
@@ -10,14 +10,9 @@ export const uploadImage = async (file: File): Promise<string> => {
   formData.append('image', file);
 
   try {
-    const response = await api.post<UploadImageResponse>(
-      '/upload-image',
-      formData,
-      {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      }
+    const response = await axios.post<UploadImageResponse>(
+      '/api/articles/upload-image',
+      formData
     );
 
     return response.data.imageUrl;

@@ -64,9 +64,11 @@ export const Navigation: React.FC = () => {
           <div className="d-flex align-items-center gap-2">
             {state.isAuthenticated && state.user ? (
               <>
-                <span className="fw-semibold text-primary me-2">
+                <Link
+                  to={ROUTES.USER_PROFILE}
+                  className="fw-semibold text-primary me-2 text-decoration-none">
                   {state.user.name}
-                </span>
+                </Link>
                 {state.user.role === 'admin' ? (
                   <div className="dropdown me-2">
                     <button
@@ -92,14 +94,26 @@ export const Navigation: React.FC = () => {
                           All Articles
                         </Link>
                       </li>
+                      <li>
+                        <Link className="dropdown-item" to={ROUTES.DRAFTS}>
+                          Drafts
+                        </Link>
+                      </li>
                     </ul>
                   </div>
                 ) : (
-                  <Link
-                    to="/my-articles"
-                    className="btn btn-outline-primary btn-sm fw-semibold me-2">
-                    My Articles
-                  </Link>
+                  <>
+                    <Link
+                      to="/my-articles"
+                      className="btn btn-outline-primary btn-sm fw-semibold me-2">
+                      My Articles
+                    </Link>
+                    <Link
+                      to={ROUTES.DRAFTS}
+                      className="btn btn-outline-warning btn-sm fw-semibold me-2">
+                      Drafts
+                    </Link>
+                  </>
                 )}
                 <Link
                   to={ROUTES.CREATE_ARTICLE}

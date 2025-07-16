@@ -94,7 +94,7 @@ export const LoginPage: React.FC = () => {
             <div className="d-flex justify-content-between align-items-center mb-2">
               <div className="text-sm">
                 <Link
-                  to={ROUTES.FORGOT_PASSWORD || '#'}
+                  to={ROUTES.FORGOT_PASSWORD}
                   className="link-primary text-decoration-none">
                   Forgot your password?
                 </Link>

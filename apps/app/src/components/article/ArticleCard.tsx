@@ -34,12 +34,14 @@ interface ArticleHeaderProps {
   title: string;
   author?: { id: number; name: string };
   publishedAt: string;
+  updatedAt?: string;
 }
 
 const ArticleHeader: React.FC<ArticleHeaderProps> = ({
   title,
   author,
   publishedAt,
+  updatedAt,
 }) => (
   <>
     <h2 className="card-title h5 mb-2 text-dark">{title}</h2>
@@ -58,15 +60,24 @@ const ArticleHeader: React.FC<ArticleHeaderProps> = ({
         </>
       )}
       {new Date(publishedAt).toLocaleDateString('sk-SK')}
+      {updatedAt && updatedAt !== publishedAt && (
+        <>
+          {' • '}
+          <span className="text-muted">
+            upravené {new Date(updatedAt).toLocaleDateString('sk-SK')}
+          </span>
+        </>
+      )}
     </p>
   </>
 );
 
 interface ArticleContentProps {
+  perex?: string;
   content: string;
 }
 
-const ArticleContent: React.FC<ArticleContentProps> = ({ content }) => (
+const ArticleContent: React.FC<ArticleContentProps> = ({ perex, content }) => (
   <p
     className="card-text mb-3 text-secondary"
     style={{
@@ -75,7 +86,7 @@ const ArticleContent: React.FC<ArticleContentProps> = ({ content }) => (
       WebkitBoxOrient: 'vertical',
       overflow: 'hidden',
     }}>
-    {content}
+    {perex || content}
   </p>
 );
 
@@ -96,7 +107,10 @@ const ArticleActions: React.FC<ArticleActionsProps> = ({
 }) => (
   <div className="d-flex gap-2 align-items-center">
     <Link
-      to={ROUTES.ARTICLE_DETAIL.replace(':articleId', articleId.toString())}
+      to={ROUTES.ARTICLE_DETAIL.replace(
+        ':userId',
+        article.user_id.toString()
+      ).replace(':articleId', articleId.toString())}
       className="small link-primary text-decoration-none">
       Read more
     </Link>
@@ -137,8 +151,9 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({
               title={article.title}
               author={article.author}
               publishedAt={article.published_at}
+              updatedAt={article.updated_at}
             />
-            <ArticleContent content={article.content} />
+            <ArticleContent perex={article.perex} content={article.content} />
             <ArticleActions
               articleId={article.id}
               showEditDelete={showEditDelete}
@@ -152,3 +167,5 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({
     </div>
   );
 };
+
+export default ArticleCard;

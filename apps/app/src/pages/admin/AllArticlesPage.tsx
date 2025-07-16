@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArticleList } from '../../components/articles';
+import { ArticleList } from '../../components/article';
 import { useArticles } from '../../context';
+import { useDebounce } from '../../hooks';
 import { Article } from '../../types';
 
 export const AllArticlesPage: React.FC = () => {
@@ -9,10 +10,11 @@ export const AllArticlesPage: React.FC = () => {
   const { articles, loading, pagination } = state;
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
+  const debouncedSearchTerm = useDebounce(searchTerm, 500); // 500ms debounce
 
   useEffect(() => {
-    fetchAllArticlesForAdmin(1);
-  }, [fetchAllArticlesForAdmin]);
+    fetchAllArticlesForAdmin(1, debouncedSearchTerm);
+  }, [fetchAllArticlesForAdmin, debouncedSearchTerm]);
 
   const handleEdit = (article: Article) => {
     navigate(`/edit-article/${article.id}`);
@@ -29,29 +31,21 @@ export const AllArticlesPage: React.FC = () => {
   };
 
   const handlePageChange = (page: number) => {
-    setSearchTerm(''); 
+    setSearchTerm('');
     fetchAllArticlesForAdmin(page);
   };
 
   const handleSearch = () => {
-    if (!searchTerm.trim()) {
-      fetchAllArticlesForAdmin(1);
-    }
+    // Search sa spustí automaticky cez useEffect keď sa zmení debouncedSearchTerm
   };
-
-  const displayedArticles = searchTerm
-    ? articles.filter(article =>
-        article.title.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    : articles;
 
   return (
     <div className="container py-4">
       <h1 className="display-6 fw-bold mb-4">
         All Articles
-        {searchTerm ? (
+        {debouncedSearchTerm ? (
           <span className="fs-6 text-muted ms-2">
-            (Filtered: {displayedArticles.length} of {pagination.totalItems})
+            (Searching: "{debouncedSearchTerm}")
           </span>
         ) : (
           <span className="fs-6 text-muted ms-2">
@@ -81,11 +75,11 @@ export const AllArticlesPage: React.FC = () => {
       </div>
 
       <ArticleList
-        articles={displayedArticles}
+        articles={articles}
         loading={loading.articles}
-        currentPage={searchTerm ? 1 : pagination.currentPage}
-        totalPages={searchTerm ? 1 : pagination.totalPages}
-        onPageChange={searchTerm ? undefined : handlePageChange}
+        currentPage={pagination.currentPage}
+        totalPages={pagination.totalPages}
+        onPageChange={handlePageChange}
         showEditDelete={true}
         onEdit={handleEdit}
         onDelete={handleDelete}

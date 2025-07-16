@@ -1,16 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import EditArticleForm from '../../components/article/EditArticleForm';
 import { useArticles } from '../../context';
 
 export const EditArticlePage: React.FC = () => {
   const { articleId } = useParams<{ articleId: string }>();
-  const { state, fetchArticleById, updateArticle } = useArticles();
+  const { state, fetchArticleById } = useArticles();
   const { currentArticle, loading } = state;
-  const navigate = useNavigate();
-
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
-  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (articleId) {
@@ -18,57 +15,28 @@ export const EditArticlePage: React.FC = () => {
     }
   }, [articleId, fetchArticleById]);
 
-  useEffect(() => {
-    if (currentArticle) {
-      setTitle(currentArticle.title || '');
-      setContent(currentArticle.content || '');
-    }
-  }, [currentArticle]);
+  if (loading.single) {
+    return (
+      <div className="container py-4">
+        <div className="fs-5 text-secondary">Loading article...</div>
+      </div>
+    );
+  }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSaving(true);
-    try {
-      await updateArticle(Number(articleId), { title, content });
-      navigate(-1);
-    } catch (err) {
-      alert('Error saving changes');
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  if (loading.single || !currentArticle) {
-    return <div className="fs-5 text-secondary">Loading article...</div>;
+  if (error || !currentArticle) {
+    return (
+      <div className="container py-4">
+        <div className="alert alert-danger">
+          Error loading article: {error || 'Article not found'}
+        </div>
+      </div>
+    );
   }
 
   return (
     <div className="container py-4">
       <h1 className="display-6 fw-bold mb-4">Edit Article</h1>
-      <form onSubmit={handleSubmit} className="mb-4">
-        <div className="mb-3">
-          <label className="form-label">Title</label>
-          <input
-            className="form-control"
-            value={title}
-            onChange={e => setTitle(e.target.value)}
-            required
-          />
-        </div>
-        <div className="mb-3">
-          <label className="form-label">Content</label>
-          <textarea
-            className="form-control"
-            value={content}
-            onChange={e => setContent(e.target.value)}
-            rows={8}
-            required
-          />
-        </div>
-        <button type="submit" className="btn btn-primary" disabled={saving}>
-          {saving ? 'Saving' : 'Save changes'}
-        </button>
-      </form>
+      <EditArticleForm article={currentArticle} />
     </div>
   );
 };

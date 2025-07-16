@@ -1,7 +1,11 @@
 import { Request, Response } from 'express';
-import { IncomingForm, File as FormidableFile, Files } from 'formidable';
-import path from 'path';
+import { Files, File as FormidableFile, IncomingForm } from 'formidable';
 import fs from 'fs';
+import path from 'path';
+import {
+  InvalidFileException,
+  UploadErrorException,
+} from '../types/exceptions';
 
 const uploadDir = path.resolve('apps/api/public/uploads');
 fs.mkdirSync(uploadDir, { recursive: true });
@@ -11,20 +15,22 @@ export class ImageController {
     const form = new IncomingForm({
       uploadDir,
       keepExtensions: true,
-      maxFileSize: 24 * 1024 * 1024, 
+      maxFileSize: 24 * 1024 * 1024,
     });
 
     form.parse(req, (err, fields, files: Files) => {
       if (err || !files.image) {
         console.error('Form parse error:', err);
-        return res.status(400).json({ message: 'Upload error' });
+        throw new UploadErrorException();
       }
 
       const fileData = files.image;
-      const image: FormidableFile = Array.isArray(fileData) ? fileData[0] : fileData;
+      const image: FormidableFile = Array.isArray(fileData)
+        ? fileData[0]
+        : fileData;
 
       if (!image || !image.filepath) {
-        return res.status(400).json({ message: 'Invalid file' });
+        throw new InvalidFileException();
       }
 
       const fileName = path.basename(image.filepath);

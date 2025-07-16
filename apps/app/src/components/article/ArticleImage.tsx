@@ -40,3 +40,5 @@ export const ArticleImage: React.FC<ArticleImageProps> = ({
     </div>
   );
 };
+
+export default ArticleImage;

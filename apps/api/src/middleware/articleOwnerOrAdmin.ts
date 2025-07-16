@@ -1,10 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
-import { ArticleService } from '../services/article.service';
+import { ArticleService } from '../services/ArticleServices';
 import {
   ArticleNotFoundException,
+  ArticleUnauthorizedException,
   InvalidIdException,
   MissingTokenException,
-  UnauthorizedException,
 } from '../types/exceptions';
 
 const articleService = new ArticleService();
@@ -27,7 +27,7 @@ export async function articleOwnerOrAdminMiddleware(
       throw new InvalidIdException('article', req.params.articleId);
     }
 
-    const article = await articleService.getArticleById(articleId);
+    const article = await articleService.getArticleByIdSimple(articleId);
     if (!article) {
       throw new ArticleNotFoundException(articleId);
     }
@@ -35,7 +35,7 @@ export async function articleOwnerOrAdminMiddleware(
     if (article.user_id === user.id || user.role === 'admin') {
       next();
     } else {
-      throw new UnauthorizedException('modify');
+      throw new ArticleUnauthorizedException('modify');
     }
   } catch (error) {
     next(error);

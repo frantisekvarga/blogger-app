@@ -23,9 +23,13 @@ class ArticleApiService {
     return apiService.get<Article[]>('/articles/featured');
   }
 
-  async getArticlesByAuthor(authorId: number): Promise<AuthorArticlesResponse> {
+  async getArticlesByAuthor(
+    authorId: number,
+    search?: string
+  ): Promise<AuthorArticlesResponse> {
+    const searchParam = search ? `?search=${encodeURIComponent(search)}` : '';
     const response = await apiService.get<any>(
-      `/articles/users/${authorId}/articles`
+      `/articles/users/${authorId}/articles${searchParam}`
     );
     return response.data;
   }
@@ -36,19 +40,23 @@ class ArticleApiService {
 
   async getAllArticles(
     page: number = 1,
-    limit: number = 10
+    limit: number = 10,
+    search?: string
   ): Promise<ArticleResponse> {
+    const searchParam = search ? `&search=${encodeURIComponent(search)}` : '';
     return apiService.get<ArticleResponse>(
-      `/articles/get-all?page=${page}&limit=${limit}`
+      `/articles/get-all?page=${page}&limit=${limit}${searchParam}`
     );
   }
 
   async getAllArticlesForAdmin(
     page: number = 1,
-    limit: number = 100
+    limit: number = 10,
+    search?: string
   ): Promise<ArticleResponse> {
+    const searchParam = search ? `&search=${encodeURIComponent(search)}` : '';
     return apiService.get<ArticleResponse>(
-      `/articles/get-all?page=${page}&limit=${limit}`
+      `/articles/get-all?page=${page}&limit=${limit}${searchParam}`
     );
   }
 
@@ -64,6 +72,24 @@ class ArticleApiService {
   ): Promise<{ success: boolean; message: string }> {
     return apiService.delete<{ success: boolean; message: string }>(
       `/articles/${articleId}`
+    );
+  }
+
+  async getDrafts(
+    page: number = 1,
+    limit: number = 10
+  ): Promise<ArticleResponse> {
+    return apiService.get<ArticleResponse>(
+      `/articles/drafts?page=${page}&limit=${limit}`
+    );
+  }
+
+  async publishArticle(
+    articleId: number
+  ): Promise<{ success: boolean; message: string }> {
+    return apiService.patch<{ success: boolean; message: string }>(
+      `/articles/${articleId}/publish`,
+      {}
     );
   }
 }

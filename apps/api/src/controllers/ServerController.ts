@@ -1,5 +1,6 @@
 import express from 'express';
 import { AppDataSource } from 'libs/database/src/lib/data-source';
+import { DatabaseException } from '../types/exceptions';
 
 export class ServerController {
   app = express();
@@ -10,15 +11,16 @@ export class ServerController {
       console.log('DataSource initialized');
       const port = process.env.PORT || 3333;
       const server = this.app.listen(port, () => {
-        console.log(
-          `Listening at http://localhost:${port}/api/public/users/3/articles/16`
-        );
+        console.log(`Server listening at http://localhost:${port}/api`);
       });
 
-      server.on('Error', console.error);
+      server.on('error', console.error);
     } catch (error) {
-      await AppDataSource.destroy();
+      if (AppDataSource.isInitialized) {
+        await AppDataSource.destroy();
+      }
       console.error('Error during Data Source initialization:', error);
+      throw new DatabaseException();
     }
   };
 }

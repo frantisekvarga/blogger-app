@@ -16,7 +16,7 @@ export const MoreArticlesByAuthor: React.FC<MoreArticlesByAuthorProps> = ({
 }) => {
   const navigate = useNavigate();
   const handleClick = (articleId: number) => {
-    navigate(`/user/${userId}/article/${articleId}`);
+    navigate(`/article/${userId}/${articleId}`);
   };
 
   return (
@@ -53,3 +53,5 @@ export const MoreArticlesByAuthor: React.FC<MoreArticlesByAuthorProps> = ({
     </div>
   );
 };
+
+export default MoreArticlesByAuthor;

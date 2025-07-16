@@ -8,13 +8,17 @@ export const ROUTES = {
   RECENT_ARTICLES: '/articles',
   ABOUT: '/about',
   AUTHOR_ARTICLES: '/author/:authorId',
-  ARTICLE_DETAIL: '/article/:articleId',
+  ARTICLE_DETAIL: '/article/:userId/:articleId',
   MY_ARTICLES: '/my-articles',
   ALL_ARTICLES: '/all-articles',
+  DRAFTS: '/drafts',
   CREATE_BOOK: '/book/create',
   CHAT: '/chat',
   EDIT_ARTICLE: '/edit-article/:articleId',
   CREATE_ARTICLE: '/create-article',
+  USER_PROFILE: '/profile',
+  FORGOT_PASSWORD: '/forgot-password',
+  RESET_PASSWORD: '/reset-password',
 };
 
 export const GROUPS = {

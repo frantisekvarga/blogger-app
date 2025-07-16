@@ -5,10 +5,10 @@
     "node": "20"
   },
   "devDependencies": {
-<<<<<<< HEAD
     "@types/bcryptjs": "^2.4.6",
     "@types/express": "^4.17.21",
-    "@types/jsonwebtoken": "^9.0.5"
+    "@types/jsonwebtoken": "^9.0.5",
+    "@types/formidable": "^3.4.5"
   },
   "dependencies": {
     "@types/cors": "^2.8.19",
@@ -18,17 +18,11 @@
     "cors": "^2.8.5",
     "database": "workspace:*",
     "express": "^4.18.2",
+    "formidable": "^3.5.4",
     "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.6.5",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
     "typeorm": "^0.3.20"
-=======
-    "@types/express": "^4.17.21",
-    "@types/formidable": "^3.4.5"
-  },
-  "dependencies": {
-    "formidable": "^3.5.4"
->>>>>>> origin/Create-Article-page
   }
 }
