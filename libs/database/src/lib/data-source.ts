@@ -6,13 +6,26 @@ import type { SeederOptions } from 'typeorm-extension';
 
 import * as entities from './entities';
 
+// Support both individual DB env vars and DATABASE_URL (for Render)
+const getDatabaseConfig = () => {
+  if (process.env.DATABASE_URL) {
+    return {
+      url: process.env.DATABASE_URL,
+    };
+  }
+  
+  return {
+    host: process.env.DB_HOST,
+    port: parseInt(process.env.DB_PORT ?? '5432'),
+    username: process.env.DB_USERNAME,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+  };
+};
+
 const options: DataSourceOptions & SeederOptions = {
   type: 'postgres',
-  host: process.env.DB_HOST,
-  port: parseInt(process.env.DB_PORT ?? '5432'),
-  username: process.env.DB_USERNAME,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
+  ...getDatabaseConfig(),
   synchronize: false,
   logging: true,
   entities: Object.values(entities),

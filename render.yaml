@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: blogger-api
+    runtime: node
+    plan: free
+    buildCommand: yarn install && yarn nx build api
+    startCommand: node dist/apps/api/main.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 24h
+      - key: CORS_ORIGIN
+        value: https://your-vercel-app.vercel.app
+
+databases:
+  - name: blogger-db
+    databaseName: blogger
+    user: blogger
+    plan: free 
