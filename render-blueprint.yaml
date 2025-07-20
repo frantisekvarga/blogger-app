@@ -3,7 +3,7 @@ services:
     name: blogger-api
     runtime: node
     plan: free
-    buildCommand: npm install && npm run build
+    buildCommand: yarn install && yarn nx build api
     startCommand: node dist/apps/api/main.js
     envVars:
       - key: NODE_ENV
