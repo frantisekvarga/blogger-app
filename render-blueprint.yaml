@@ -1,9 +1,10 @@
 services:
   - type: web
     name: blogger-api
-    runtime: docker
+    runtime: node
     plan: free
-    dockerfilePath: apps/api/Dockerfile
+    buildCommand: npm install && npm run build
+    startCommand: node dist/apps/api/main.js
     envVars:
       - key: NODE_ENV
         value: production
