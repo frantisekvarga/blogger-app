@@ -15,6 +15,12 @@ const server = new ServerController();
 
 server.app.use(express.json());
 server.app.use(express.urlencoded({ extended: true }));
+
+// Health check endpoint
+server.app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'OK', timestamp: new Date().toISOString() });
+});
+
 server.app.use('/assets', express.static(path.join(__dirname, 'assets')));
 server.app.use('/api', articleRouter);
 server.app.use('/api/auth', authRoutes);

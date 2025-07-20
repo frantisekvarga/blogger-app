@@ -17,7 +17,6 @@ export const ROUTES = {
   EDIT_ARTICLE: '/edit-article/:articleId',
   CREATE_ARTICLE: '/create-article',
   USER_PROFILE: '/profile',
-  FORGOT_PASSWORD: '/forgot-password',
   RESET_PASSWORD: '/reset-password',
 };
 
