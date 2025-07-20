@@ -4,6 +4,8 @@
   "license": "MIT",
   "scripts": {
     "nx": "nx",
+    "build": "nx build api",
+    "start": "node dist/apps/api/main.js",
     "serve:all": "nx run-many --target=serve --all",
     "build:all": "nx run-many --target=build --all",
     "ts:check:all": "nx run-many --target=ts:check --all",

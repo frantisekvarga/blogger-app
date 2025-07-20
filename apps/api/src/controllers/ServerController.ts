@@ -9,7 +9,7 @@ export class ServerController {
     try {
       await AppDataSource.initialize();
       console.log('DataSource initialized');
-      const port = process.env.PORT || 3333;
+      const port = process.env.PORT || 10000;
       const server = this.app.listen(port, () => {
         console.log(`Server listening at http://localhost:${port}/api`);
       });
