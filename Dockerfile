@@ -23,5 +23,5 @@ RUN yarn nx build api
 # Expose port
 EXPOSE 10000
 
-# Spusti aplikáciu
-CMD ["node", "dist/apps/api/main.js"] 
+# Spusti migrácie a potom aplikáciu
+CMD yarn nx run database:run-migrations && node dist/apps/api/main.js 
