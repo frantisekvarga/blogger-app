@@ -3,6 +3,7 @@
  * This is only a minimal backend to get started.
  */
 
+import cors from 'cors';
 import express from 'express';
 import * as path from 'path';
 
@@ -12,6 +13,19 @@ import articleRouter from './routes/ArticleRouters';
 import { authRoutes } from './routes/AuthRouters';
 
 const server = new ServerController();
+
+// CORS configuration
+const corsOptions = {
+  origin: process.env.CORS_ORIGIN || [
+    'https://blogger-app-or4.vercel.app',
+    'https://blogger-app-sqeq.onrender.com',
+    'http://localhost:4200', // pre lokálny vývoj
+  ],
+  credentials: true,
+  optionsSuccessStatus: 200,
+};
+
+server.app.use(cors(corsOptions));
 
 server.app.use(express.json());
 server.app.use(express.urlencoded({ extended: true }));

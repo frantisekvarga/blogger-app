@@ -14,7 +14,7 @@ services:
       - key: JWT_EXPIRES_IN
         value: 24h
       - key: CORS_ORIGIN
-        value: https://your-vercel-app.vercel.app
+        value: https://blogger-app-or4.vercel.app
       - key: DB_HOST
         fromDatabase:
           name: blogger-db
