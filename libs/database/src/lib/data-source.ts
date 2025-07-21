@@ -24,7 +24,7 @@ const getDatabaseConfig = () => {
 };
 
 const options: DataSourceOptions & SeederOptions = {
-  type: 'mysql',
+  type: 'postgres', // ← správne pre Render PostgreSQL
   ...getDatabaseConfig(),
   synchronize: false,
   logging: true,
