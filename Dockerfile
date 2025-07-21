@@ -2,8 +2,7 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-# Inštaluj yarn
-RUN npm install -g yarn
+
 
 # Kopíruj package.json súbory
 COPY package.json ./
