@@ -13,18 +13,18 @@ const getDatabaseConfig = () => {
       url: process.env.DATABASE_URL,
     };
   }
-  
+
   return {
-    host: process.env.DB_HOST,
-    port: parseInt(process.env.DB_PORT ?? '5432'),
-    username: process.env.DB_USERNAME,
+    host: process.env.DB_HOST || process.env.DB_HOSTNAME,
+    port: parseInt(process.env.DB_PORT ?? '3306'),
+    username: process.env.DB_USERNAME || process.env.DB_USER,
     password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
+    database: process.env.DB_NAME || process.env.DB_DATABASE,
   };
 };
 
 const options: DataSourceOptions & SeederOptions = {
-  type: 'postgres',
+  type: 'mysql',
   ...getDatabaseConfig(),
   synchronize: false,
   logging: true,

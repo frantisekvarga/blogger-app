@@ -15,6 +15,26 @@ services:
         value: 24h
       - key: CORS_ORIGIN
         value: https://your-vercel-app.vercel.app
+      - key: DB_HOST
+        fromDatabase:
+          name: blogger-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: blogger-db
+          property: port
+      - key: DB_USERNAME
+        fromDatabase:
+          name: blogger-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: blogger-db
+          property: password
+      - key: DB_NAME
+        fromDatabase:
+          name: blogger-db
+          property: database
 
 databases:
   - name: blogger-db

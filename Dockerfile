@@ -9,6 +9,8 @@ RUN npm install -g yarn
 COPY package.json ./
 COPY apps/api/package.json ./apps/api/
 COPY libs/database/package.json ./libs/database/
+COPY nx.json ./
+COPY tsconfig.base.json ./
 
 # Inštaluj závislosti pomocou yarn
 RUN yarn install --network-timeout 100000
