@@ -1,6 +1,7 @@
+import { config } from '../config';
 import { getStoredToken } from '../utils';
 
-const API_BASE_URL = '/api';
+const API_BASE_URL = config.httpServiceUrl + '/api';
 
 class ApiService {
   private baseUrl: string;
@@ -104,4 +105,4 @@ class ApiService {
   }
 }
 
-export const apiService = new ApiService();
+export const apiService = new ApiService(API_BASE_URL);
