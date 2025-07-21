@@ -40,7 +40,7 @@
     "./libs/*"
   ],
   "dependencies": {
-    "@nx/react": "^19.1.1",
+    "@nx/react": "19.1.1",
     "axios": "^1.6.0",
     "bootstrap": "^5.3.7",
     "express": "^4.18.1",
@@ -55,8 +55,8 @@
     "@instea/eslint-config-node": "^1.1.1",
     "@instea/eslint-config-react": "^1.2.0",
     "@jest/transform": "^29.7.0",
-    "@nx/eslint-plugin": "^19.1.1",
-    "@nx/express": "^19.1.1",
+    "@nx/eslint-plugin": "19.1.1",
+    "@nx/express": "19.1.1",
     "@nx/jest": "19.1.1",
     "@nx/js": "19.1.1",
     "@nx/node": "19.1.1",
