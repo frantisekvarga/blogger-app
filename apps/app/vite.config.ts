@@ -32,6 +32,7 @@ export default defineConfig({
   // },
 
   build: {
+    outDir: '../../dist/apps/app',
     reportCompressedSize: true,
     commonjsOptions: {
       transformMixedEsModules: true,
